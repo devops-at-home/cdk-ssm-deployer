@@ -1,14 +1,19 @@
-import { awscdk } from "projen";
-const project = new awscdk.AwsCdkTypeScriptApp({
-  cdkVersion: "2.1.0",
-  defaultReleaseBranch: "main",
-  name: "cdk-ssm-deployer",
-  projenrcTs: true,
+import { awscdk } from 'projen';
 
-  // deps: [],                /* Runtime dependencies of this module. */
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
-  // devDeps: [],             /* Build dependencies for this module. */
-  // packageName: undefined,  /* The "name" in package.json. */
-  // release: undefined,      /* Add release management to this project. */
+const name = 'cdk-ssm-deployer';
+
+const project = new awscdk.AwsCdkTypeScriptApp({
+  defaultReleaseBranch: 'main',
+  cdkVersion: '2.3.0',
+  name,
+  packageName: name.toLowerCase().replace(/\./g, '-'),
+  licensed: false,
+  projenrcTs: true,
+  eslint: false,
+  githubOptions: {
+    workflows: false,
+    mergify: false,
+  },
+  gitignore: ['.idea'],
 });
 project.synth();

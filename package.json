@@ -9,11 +9,11 @@
     "deploy": "npx projen deploy",
     "destroy": "npx projen destroy",
     "diff": "npx projen diff",
-    "eslint": "npx projen eslint",
     "package": "npx projen package",
     "post-compile": "npx projen post-compile",
     "pre-compile": "npx projen pre-compile",
     "synth": "npx projen synth",
+    "synth:silent": "npx projen synth:silent",
     "test": "npx projen test",
     "test:update": "npx projen test:update",
     "test:watch": "npx projen test:watch",
@@ -25,17 +25,10 @@
   "devDependencies": {
     "@types/jest": "*",
     "@types/node": "^12",
-    "@typescript-eslint/eslint-plugin": "^5",
-    "@typescript-eslint/parser": "^5",
-    "aws-cdk": "^2.1.0",
+    "aws-cdk": "^2.3.0",
     "esbuild": "^0.14.9",
-    "eslint": "^8",
-    "eslint-import-resolver-node": "^0.3.6",
-    "eslint-import-resolver-typescript": "^2.5.0",
-    "eslint-plugin-import": "^2.25.3",
     "jest": "^27.4.5",
     "jest-junit": "^13",
-    "json-schema": "^0.4.0",
     "npm-check-updates": "^12",
     "projen": "^0.47.7",
     "ts-jest": "^27.1.2",
@@ -43,11 +36,11 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.1.0",
+    "aws-cdk-lib": "^2.3.0",
     "constructs": "^10.0.5"
   },
   "bundledDependencies": [],
-  "license": "Apache-2.0",
+  "license": "UNLICENSED",
   "version": "0.0.0",
   "jest": {
     "testMatch": [
