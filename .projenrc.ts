@@ -15,5 +15,10 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     mergify: false,
   },
   gitignore: ['.idea'],
+  context: {
+    params: {
+      destinations: ['h6060-001'],
+    },
+  },
 });
 project.synth();
