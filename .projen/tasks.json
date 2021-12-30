@@ -188,7 +188,7 @@
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @types/jest @types/node aws-cdk esbuild jest jest-junit npm-check-updates ts-jest ts-node typescript aws-cdk-lib constructs"
+          "exec": "yarn upgrade @types/aws-lambda @types/jest @types/node aws-cdk esbuild jest jest-junit npm-check-updates ts-jest ts-node typescript aws-cdk-lib constructs"
         },
         {
           "exec": "npx projen"

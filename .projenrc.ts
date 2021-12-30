@@ -10,6 +10,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   licensed: false,
   projenrcTs: true,
   eslint: false,
+  devDeps: ['esbuild@0', '@types/aws-lambda'],
   githubOptions: {
     workflows: false,
     mergify: false,

@@ -17,12 +17,13 @@ export class MyStack extends Stack {
 
     // Create bucket
     const { bucket } = new BucketWithEventBridge(this, 'Bucket');
+    const { bucketName } = bucket;
 
     // TODO: SSM Document for downloading package to temp folder and running script
 
     destinations.forEach((destination) => {
       new SSMDestination(this, `dest-${destination}`, {
-        bucket,
+        bucketName,
         destination,
       });
     });
