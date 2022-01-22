@@ -4,12 +4,13 @@ const name = 'cdk-ssm-deployer';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   defaultReleaseBranch: 'main',
-  cdkVersion: '2.3.0',
+  cdkVersion: '2.8.0',
   name,
   packageName: name.toLowerCase().replace(/\./g, '-'),
   licensed: false,
   projenrcTs: true,
   eslint: false,
+  deps: ['aws-lambda'],
   devDeps: ['esbuild@0', '@types/aws-lambda'],
   githubOptions: {
     workflows: false,
