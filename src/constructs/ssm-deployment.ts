@@ -1,23 +1,20 @@
 import { Construct } from 'constructs';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Rule } from 'aws-cdk-lib/aws-events';
 import { AwsApi } from 'aws-cdk-lib/aws-events-targets';
 import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
-type SSMDestinationProps = {
+type SSMDeploymentProps = {
   bucketName: string;
   destination: string;
 };
 
-export class SSMDestination extends Construct {
-  constructor(scope: Construct, id: string, props: SSMDestinationProps) {
+export class SSMDeployment extends Construct {
+  constructor(scope: Construct, id: string, props: SSMDeploymentProps) {
     super(scope, id);
 
-    const { bucketName, destination } = props;
+    // TODO: Invoke deployments documents to add and remove workloads when config added or removed from S3
 
-    new NodejsFunction(this, 'Lambda', {
-      functionName: `deployer-${destination}-get-current-version`,
-    });
+    const { bucketName, destination } = props;
 
     const s3BucketRule = new Rule(this, 'Rule', {
       ruleName: `deployTrigger-${destination}`,
@@ -49,16 +46,5 @@ export class SSMDestination extends Construct {
     });
 
     s3BucketRule.addTarget(ssmApiAction);
-
-    // TODO: OIDC permissions for git repo
-    // - write to bucket folder (zip only)
-    // - invoke version lambda (is it possible to restrict input params) -> only way to do this is a lambda per destination
-
-    // TODO: ssm role and permissions to
-    // - read from bucket folder
-    // - invoke version lambda
-    // - trigger deployment
-
-    // TODO: custom resource to create destination folder in bucket
   }
 }

@@ -1,14 +1,17 @@
 import { Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { SSMDestination } from '../src/constructs/destination';
+import { SSMDeployment } from '../src/constructs/ssm-deployment';
 
-test('Snapshot - destination', () => {
+describe('SSMDeployment', () => {
   const stack = new Stack();
-  new SSMDestination(stack, 'SSMDestination', {
+  new SSMDeployment(stack, 'SSMDeployment', {
     bucketName: 'someName',
     destination: 'h6060-001',
   });
 
   const template = Template.fromStack(stack);
-  expect(template.toJSON()).toMatchSnapshot();
+
+  test('Snapshot', () => {
+    expect(template.toJSON()).toMatchSnapshot();
+  });
 });

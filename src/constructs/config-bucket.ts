@@ -1,6 +1,6 @@
-import { Construct } from 'constructs';
 import { CfnOutput } from 'aws-cdk-lib';
 import { Bucket, BucketEncryption, CfnBucket } from 'aws-cdk-lib/aws-s3';
+import { Construct } from 'constructs';
 
 export class BucketWithEventBridge extends Construct {
   public bucket: Bucket;
@@ -18,7 +18,7 @@ export class BucketWithEventBridge extends Construct {
       'true'
     );
 
-    new CfnOutput(this, 'bucketWebsiteUrl', {
+    new CfnOutput(this, 'ConfigBucket', {
       value: this.bucket.bucketName,
     });
   }

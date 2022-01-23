@@ -1,7 +1,7 @@
 import { App, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { BucketWithEventBridge } from './constructs/bucket';
-import { SSMDestination } from './constructs/destination';
+import { SharedInfraStack } from './stacks/shared-infra';
+import { DestinationStack } from './stacks/destination';
 
 type Params = {
   destinations: string[];
@@ -15,15 +15,17 @@ export class MyStack extends Stack {
     const params: Params = this.node.tryGetContext('params');
     const { destinations } = params;
 
-    // Create bucket
-    const { bucket } = new BucketWithEventBridge(this, 'Bucket');
+    // Create shared infra
+    const { bucket, table } = new SharedInfraStack(this, 'SharedInfraStack');
     const { bucketName } = bucket;
+    const { tableName } = table;
 
     // TODO: SSM Document for downloading package to temp folder and running script
 
     destinations.forEach((destination) => {
-      new SSMDestination(this, `dest-${destination}`, {
+      new DestinationStack(this, `DestinationStack-${destination}`, {
         bucketName,
+        tableName,
         destination,
       });
     });

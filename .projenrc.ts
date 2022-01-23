@@ -11,7 +11,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   projenrcTs: true,
   eslint: false,
   deps: ['aws-lambda'],
-  devDeps: ['esbuild@0', '@types/aws-lambda'],
+  devDeps: ['esbuild@0', '@types/aws-lambda', '@types/node'],
   githubOptions: {
     workflows: false,
     mergify: false,
@@ -24,3 +24,5 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   },
 });
 project.synth();
+
+// github.com/devops-at-home/deployer-h6060-001

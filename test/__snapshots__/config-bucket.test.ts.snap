@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Snapshot - bucket 1`] = `
+exports[`BucketWithEventBridge Snapshot 1`] = `
 Object {
   "Outputs": Object {
-    "BucketWithEventBridgebucketWebsiteUrl1DB734D4": Object {
+    "BucketWithEventBridgeConfigBucketC0EF07FC": Object {
       "Value": Object {
         "Ref": "BucketWithEventBridgeBucket33D3C394",
       },
