@@ -4,14 +4,18 @@ import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import { BucketWithEventBridge } from '../constructs/config-bucket';
 import { VaultDynamoDB } from '../constructs/vault-dynamodb';
+import { GitHubActionsOidcProvider } from '../constructs/gh-aws-oidc-connect-provider';
+import { GitHubActionsRole } from '../constructs/gh-aws-oidc-connect-role';
+import { PolicyDocument, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+
+const repository = 'devops-at-home/cdk-ssm-deployer';
+const destinations: string[] = [];
 
 export class SharedInfraStack extends NestedStack {
   public bucket: Bucket;
   public table: Table;
   constructor(scope: Construct, id: string, props: NestedStackProps = {}) {
     super(scope, id, props);
-
-    // TODO: OIDC permissions for git repo
 
     // TODO: SSM document for running deployments
 
@@ -20,5 +24,33 @@ export class SharedInfraStack extends NestedStack {
 
     const { table } = new VaultDynamoDB(this, 'VaultDynamoDB');
     this.table = table;
+
+    new GitHubActionsOidcProvider(this, 'GitHubActionsOidcProvider');
+
+    new GitHubActionsRole(this, 'GitHubActionsRole', {
+      provider: GitHubActionsOidcProvider.forAccount(),
+      repository,
+      inlinePolicies: {
+        s3: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              resources: [`${bucket.bucketArn}/*`],
+              actions: ['s3:PutObject'],
+              conditions: {
+                StringEquals: {
+                  's3:prefix': destZips(destinations),
+                },
+              },
+            }),
+          ],
+        }),
+      },
+    });
   }
 }
+
+const destZips = (destinations: string[]) => {
+  return destinations.map((dest) => {
+    return `${dest}.zip`;
+  });
+};
