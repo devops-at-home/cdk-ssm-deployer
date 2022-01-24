@@ -12,8 +12,6 @@ export class SSMDeployment extends Construct {
   constructor(scope: Construct, id: string, props: SSMDeploymentProps) {
     super(scope, id);
 
-    // TODO: Invoke deployments documents to add and remove workloads when config added or removed from S3
-
     const { bucketName, destination } = props;
 
     const s3BucketRule = new Rule(this, 'Rule', {
@@ -35,6 +33,8 @@ export class SSMDeployment extends Construct {
       actions: ['ssm:*'],
       resources: ['*'],
     });
+
+    // TODO: Invoke deployments documents to add and remove workloads when config added or removed from S3
 
     const ssmApiAction = new AwsApi({
       action: 'action',
