@@ -1,9 +1,6 @@
 import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
-import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { Construct } from 'constructs';
 import { SSMDeployment } from '../constructs/ssm-deployment';
-import { join } from 'path';
 
 interface DestinationStackProps extends NestedStackProps {
   bucketName: string;
@@ -19,18 +16,11 @@ export class DestinationStack extends NestedStack {
 
     // TODO: ssm role and permissions to
     // - read from bucket folder
-    // - invoke version lambda
-    // - trigger deployment
+    // - DynamoDB permissions for Vault: https://www.vaultproject.io/docs/configuration/storage/dynamodb
 
     new SSMDeployment(this, `SSMDeployment-${destination}`, {
       bucketName,
       destination,
-    });
-
-    new BucketDeployment(this, `BucketDeployment-${destination}`, {
-      destinationBucket: Bucket.fromBucketName(this, 'DestBucket', bucketName),
-      sources: [Source.asset(join(__dirname, '../../../', destination))],
-      destinationKeyPrefix: destination,
     });
   }
 }
