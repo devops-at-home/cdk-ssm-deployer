@@ -10,7 +10,9 @@ describe('SharedInfraStack', () => {
   test('Bucket', () => {
     template.resourceCountIs('AWS::S3::Bucket', 1);
     template.hasResourceProperties('AWS::S3::Bucket', {
-      EventBridgeConfiguration: { EventBridgeEnabled: 'true' },
+      NotificationConfiguration: {
+        EventBridgeConfiguration: { EventBridgeEnabled: 'true' },
+      },
       VersioningConfiguration: {
         Status: 'Enabled',
       },

@@ -27,9 +27,6 @@ Object {
             },
           ],
         },
-        "EventBridgeConfiguration": Object {
-          "EventBridgeEnabled": "true",
-        },
         "LifecycleConfiguration": Object {
           "Rules": Array [
             Object {
@@ -37,6 +34,11 @@ Object {
               "Status": "Enabled",
             },
           ],
+        },
+        "NotificationConfiguration": Object {
+          "EventBridgeConfiguration": Object {
+            "EventBridgeEnabled": "true",
+          },
         },
         "VersioningConfiguration": Object {
           "Status": "Enabled",

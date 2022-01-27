@@ -24,5 +24,3 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   },
 });
 project.synth();
-
-// github.com/devops-at-home/deployer-h6060-001

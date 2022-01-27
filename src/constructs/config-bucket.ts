@@ -19,7 +19,7 @@ export class BucketWithEventBridge extends Construct {
 
     const cfnBucket = this.bucket.node.defaultChild as CfnBucket;
     cfnBucket.addPropertyOverride(
-      'EventBridgeConfiguration.EventBridgeEnabled',
+      'NotificationConfiguration.EventBridgeConfiguration.EventBridgeEnabled',
       'true'
     );
 
