@@ -138,52 +138,6 @@ Object {
             "PolicyDocument": Object {
               "Statement": Array [
                 Object {
-                  "Action": Array [
-                    "dynamodb:DescribeLimits",
-                    "dynamodb:DescribeTimeToLive",
-                    "dynamodb:ListTagsOfResource",
-                    "dynamodb:DescribeReservedCapacityOfferings",
-                    "dynamodb:DescribeReservedCapacity",
-                    "dynamodb:ListTables",
-                    "dynamodb:BatchGetItem",
-                    "dynamodb:BatchWriteItem",
-                    "dynamodb:CreateTable",
-                    "dynamodb:DeleteItem",
-                    "dynamodb:GetItem",
-                    "dynamodb:GetRecords",
-                    "dynamodb:PutItem",
-                    "dynamodb:Query",
-                    "dynamodb:UpdateItem",
-                    "dynamodb:Scan",
-                    "dynamodb:DescribeTable",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::Join": Array [
-                      "",
-                      Array [
-                        "arn:aws:dynamodb:",
-                        Object {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        Object {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":table/tableName",
-                      ],
-                    ],
-                  },
-                },
-              ],
-              "Version": "2012-10-17",
-            },
-            "PolicyName": "table",
-          },
-          Object {
-            "PolicyDocument": Object {
-              "Statement": Array [
-                Object {
                   "Action": "s3:GetObject",
                   "Effect": "Allow",
                   "Resource": "arn:aws:s3:::bucketName/h6060-001.zip",
@@ -197,6 +151,79 @@ Object {
         "RoleName": "SSMServiceRole-h6060-001",
       },
       "Type": "AWS::IAM::Role",
+    },
+    "RoleTablePolicyED9E5ADA": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:DescribeLimits",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:ListTagsOfResource",
+                "dynamodb:DescribeReservedCapacityOfferings",
+                "dynamodb:DescribeReservedCapacity",
+                "dynamodb:BatchGetItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:CreateTable",
+                "dynamodb:DeleteItem",
+                "dynamodb:GetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:PutItem",
+                "dynamodb:Query",
+                "dynamodb:UpdateItem",
+                "dynamodb:Scan",
+                "dynamodb:DescribeTable",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:dynamodb:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/tableName",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "dynamodb:ListTables",
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:aws:dynamodb:",
+                    Object {
+                      "Ref": "AWS::Region",
+                    },
+                    ":",
+                    Object {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/*",
+                  ],
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "table",
+        "Roles": Array [
+          Object {
+            "Ref": "Role8C6B06EB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
   },
 }

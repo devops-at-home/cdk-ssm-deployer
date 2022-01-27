@@ -1,6 +1,7 @@
 import { Aws } from 'aws-cdk-lib';
 import {
   ManagedPolicy,
+  Policy,
   PolicyDocument,
   PolicyStatement,
   Role,
@@ -10,7 +11,7 @@ import { Construct } from 'constructs';
 
 type SSMRoleProps = {
   bucketName: string;
-  tableName: string;
+  tableName?: string;
   destination: string;
 };
 
@@ -24,14 +25,28 @@ export class SSMRole extends Construct {
     // DynamoDB permissions for Vault:
     // https://www.vaultproject.io/docs/configuration/storage/dynamodb
 
-    new Role(this, 'Role', {
+    const role = new Role(this, 'Role', {
       roleName: `SSMServiceRole-${destination}`,
       assumedBy: new ServicePrincipal('ssm.amazonaws.com'),
       managedPolicies: [
         ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
       ],
       inlinePolicies: {
-        table: new PolicyDocument({
+        bucket: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              actions: ['s3:GetObject'],
+              resources: [`arn:aws:s3:::${bucketName}/${destination}.zip`],
+            }),
+          ],
+        }),
+      },
+    });
+
+    if (tableName) {
+      role.attachInlinePolicy(
+        new Policy(this, 'TablePolicy', {
+          policyName: 'table',
           statements: [
             new PolicyStatement({
               actions: [
@@ -40,7 +55,6 @@ export class SSMRole extends Construct {
                 'dynamodb:ListTagsOfResource',
                 'dynamodb:DescribeReservedCapacityOfferings',
                 'dynamodb:DescribeReservedCapacity',
-                'dynamodb:ListTables',
                 'dynamodb:BatchGetItem',
                 'dynamodb:BatchWriteItem',
                 'dynamodb:CreateTable',
@@ -57,17 +71,13 @@ export class SSMRole extends Construct {
                 `arn:aws:dynamodb:${REGION}:${ACCOUNT_ID}:table/${tableName}`,
               ],
             }),
-          ],
-        }),
-        bucket: new PolicyDocument({
-          statements: [
             new PolicyStatement({
-              actions: ['s3:GetObject'],
-              resources: [`arn:aws:s3:::${bucketName}/${destination}.zip`],
+              actions: ['dynamodb:ListTables'],
+              resources: [`arn:aws:dynamodb:${REGION}:${ACCOUNT_ID}:table/*`],
             }),
           ],
-        }),
-      },
-    });
+        })
+      );
+    }
   }
 }
