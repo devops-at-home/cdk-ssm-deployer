@@ -1,0 +1,73 @@
+import { Aws } from 'aws-cdk-lib';
+import {
+  ManagedPolicy,
+  PolicyDocument,
+  PolicyStatement,
+  Role,
+  ServicePrincipal,
+} from 'aws-cdk-lib/aws-iam';
+import { Construct } from 'constructs';
+
+type SSMRoleProps = {
+  bucketName: string;
+  tableName: string;
+  destination: string;
+};
+
+export class SSMRole extends Construct {
+  constructor(scope: Construct, id: string, props: SSMRoleProps) {
+    super(scope, id);
+
+    const { bucketName, tableName, destination } = props;
+    const { REGION, ACCOUNT_ID } = Aws;
+
+    // DynamoDB permissions for Vault:
+    // https://www.vaultproject.io/docs/configuration/storage/dynamodb
+
+    new Role(this, 'Role', {
+      roleName: `SSMServiceRole-${destination}`,
+      assumedBy: new ServicePrincipal('ssm.amazonaws.com'),
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
+      ],
+      inlinePolicies: {
+        table: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              actions: [
+                'dynamodb:DescribeLimits',
+                'dynamodb:DescribeTimeToLive',
+                'dynamodb:ListTagsOfResource',
+                'dynamodb:DescribeReservedCapacityOfferings',
+                'dynamodb:DescribeReservedCapacity',
+                'dynamodb:ListTables',
+                'dynamodb:BatchGetItem',
+                'dynamodb:BatchWriteItem',
+                'dynamodb:CreateTable',
+                'dynamodb:DeleteItem',
+                'dynamodb:GetItem',
+                'dynamodb:GetRecords',
+                'dynamodb:PutItem',
+                'dynamodb:Query',
+                'dynamodb:UpdateItem',
+                'dynamodb:Scan',
+                'dynamodb:DescribeTable',
+              ],
+              resources: [
+                `arn:aws:dynamodb:${REGION}:${ACCOUNT_ID}:table/${tableName}`,
+              ],
+            }),
+          ],
+        }),
+        bucket: new PolicyDocument({
+          statements: [
+            new PolicyStatement({
+              actions: ['s3:GetObject'],
+              resources: [`arn:aws:s3:::${bucketName}/${destination}.zip`],
+            }),
+          ],
+        }),
+      },
+    });
+  }
+}

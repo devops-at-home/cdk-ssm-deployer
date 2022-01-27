@@ -1,6 +1,7 @@
 import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { SSMDeployment } from '../constructs/ssm-deployment';
+import { SSMRole } from '../constructs/ssm-role';
 
 interface DestinationStackProps extends NestedStackProps {
   bucketName: string;
@@ -12,13 +13,15 @@ export class DestinationStack extends NestedStack {
   constructor(scope: Construct, id: string, props: DestinationStackProps) {
     super(scope, id, props);
 
-    const { bucketName, destination } = props;
+    const { bucketName, tableName, destination } = props;
 
-    // TODO: ssm role and permissions to
-    // - read from bucket folder
-    // - DynamoDB permissions for Vault: https://www.vaultproject.io/docs/configuration/storage/dynamodb
+    new SSMRole(this, 'Role', {
+      destination,
+      bucketName,
+      tableName,
+    });
 
-    new SSMDeployment(this, `SSMDeployment-${destination}`, {
+    new SSMDeployment(this, 'Deployment', {
       bucketName,
       destination,
     });

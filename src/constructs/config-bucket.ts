@@ -1,4 +1,4 @@
-import { CfnOutput } from 'aws-cdk-lib';
+import { CfnOutput, Duration } from 'aws-cdk-lib';
 import { Bucket, BucketEncryption, CfnBucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
@@ -10,6 +10,11 @@ export class BucketWithEventBridge extends Construct {
     this.bucket = new Bucket(this, 'Bucket', {
       encryption: BucketEncryption.S3_MANAGED,
       versioned: true,
+      lifecycleRules: [
+        {
+          noncurrentVersionExpiration: Duration.days(60),
+        },
+      ],
     });
 
     const cfnBucket = this.bucket.node.defaultChild as CfnBucket;
