@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SharedInfraStack Snapshot 1`] = `
+Object {
+  "Outputs": Object {
+    "BucketConfigBucket6D3E4CBA": Object {
+      "Value": Object {
+        "Ref": "BucketD7FEB781",
+      },
+    },
+    "VaultDynamoDBVaultTable80F08FA5": Object {
+      "Value": Object {
+        "Ref": "VaultDynamoDBTable7271446C",
+      },
+    },
+  },
+  "Resources": Object {
+    "BucketD7FEB781": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "AES256",
+              },
+            },
+          ],
+        },
+        "EventBridgeConfiguration": Object {
+          "EventBridgeEnabled": "true",
+        },
+        "LifecycleConfiguration": Object {
+          "Rules": Array [
+            Object {
+              "NoncurrentVersionExpirationInDays": 60,
+              "Status": "Enabled",
+            },
+          ],
+        },
+        "VersioningConfiguration": Object {
+          "Status": "Enabled",
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "GitHubActionsOidcProviderGithubOidcProvider": Object {
+      "Properties": Object {
+        "ClientIdList": Array [
+          "sigstore",
+        ],
+        "ThumbprintList": Array [
+          "a031c46782e6e6c662c2c87c76da9aa62ccabd8e",
+        ],
+        "Url": "https://token.actions.githubusercontent.com",
+      },
+      "Type": "AWS::IAM::OIDCProvider",
+    },
+    "GitHubActionsRole4F1BBA26": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "StringLike": Object {
+                  "token.actions.githubusercontent.com:sub": "repo:devops-at-home/cdk-ssm-deployer:*",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:aws:iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":oidc-provider/token.actions.githubusercontent.com",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": "s3:PutObject",
+                  "Condition": Object {
+                    "StringEquals": Object {
+                      "s3:prefix": Array [],
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        Object {
+                          "Fn::GetAtt": Array [
+                            "BucketD7FEB781",
+                            "Arn",
+                          ],
+                        },
+                        "/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "s3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "VaultDynamoDBTable7271446C": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "Path",
+            "AttributeType": "S",
+          },
+          Object {
+            "AttributeName": "Key",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "Path",
+            "KeyType": "HASH",
+          },
+          Object {
+            "AttributeName": "Key",
+            "KeyType": "RANGE",
+          },
+        ],
+        "SSESpecification": Object {
+          "SSEEnabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+}
+`;

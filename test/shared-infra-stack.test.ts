@@ -4,9 +4,8 @@ import { SharedInfraStack } from '../src/stacks/shared-infra';
 
 describe('SharedInfraStack', () => {
   const stack = new Stack();
-  new SharedInfraStack(stack, 'SharedInfraStack');
-
-  const template = Template.fromStack(stack);
+  const nestedStack = new SharedInfraStack(stack, 'SharedInfraStack');
+  const template = Template.fromStack(nestedStack);
 
   test('Bucket', () => {
     template.resourceCountIs('AWS::S3::Bucket', 1);

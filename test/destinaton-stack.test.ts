@@ -9,7 +9,6 @@ describe('DestinationStack', () => {
     tableName: 'tableName',
     destination: 'h6060-001',
   });
-
   const template = Template.fromStack(nestedStack);
 
   test('Snapshot', () => {
