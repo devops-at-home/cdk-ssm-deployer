@@ -1,7 +1,7 @@
 import { NestedStack, NestedStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SSMDeployment } from '../constructs/ssm-deployment';
 import { SSMRole } from '../constructs/ssm-role';
+// import { SSMDeployment } from '../constructs/ssm-deployment';
 
 interface DestinationStackProps extends NestedStackProps {
   bucketName: string;
@@ -21,9 +21,9 @@ export class DestinationStack extends NestedStack {
       tableName,
     });
 
-    new SSMDeployment(this, 'Deployment', {
-      bucketName,
-      destination,
-    });
+    // new SSMDeployment(this, 'Deployment', {
+    //   bucketName,
+    //   destination,
+    // });
   }
 }
