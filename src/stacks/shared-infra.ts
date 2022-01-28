@@ -7,6 +7,8 @@ import { VaultDynamoDB } from '../constructs/vault-dynamodb';
 import { GitHubActionsOidcProvider } from '../constructs/gh-aws-oidc-connect-provider';
 import { GitHubActionsRole } from '../constructs/gh-aws-oidc-connect-role';
 import { PolicyDocument, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { KmsKey } from '../constructs/kms-key';
+import { Key } from 'aws-cdk-lib/aws-kms';
 
 const repository = 'devops-at-home/cdk-ssm-deployer';
 const destinations: string[] = [];
@@ -14,6 +16,7 @@ const destinations: string[] = [];
 export class SharedInfraStack extends NestedStack {
   public bucket: Bucket;
   public table: Table;
+  public key: Key;
   constructor(scope: Construct, id: string, props: NestedStackProps = {}) {
     super(scope, id, props);
 
@@ -24,6 +27,9 @@ export class SharedInfraStack extends NestedStack {
 
     const { table } = new VaultDynamoDB(this, 'VaultDynamoDB');
     this.table = table;
+
+    const { key } = new KmsKey(this, 'KmsKey');
+    this.key = key;
 
     new GitHubActionsOidcProvider(this, 'GitHubActionsOidcProvider');
 

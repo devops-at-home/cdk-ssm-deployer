@@ -16,9 +16,13 @@ export class MyStack extends Stack {
     const { destinations } = params;
 
     // Create shared infra
-    const { bucket, table } = new SharedInfraStack(this, 'SharedInfraStack');
+    const { bucket, table, key } = new SharedInfraStack(
+      this,
+      'SharedInfraStack'
+    );
     const { bucketName } = bucket;
     const { tableName } = table;
+    const { keyArn } = key;
 
     // TODO: SSM Document for downloading package to temp folder and running script
 
@@ -27,6 +31,7 @@ export class MyStack extends Stack {
         bucketName,
         tableName,
         destination,
+        keyArn,
       });
     });
   }

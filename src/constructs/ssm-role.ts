@@ -13,13 +13,14 @@ type SSMRoleProps = {
   bucketName: string;
   tableName?: string;
   destination: string;
+  keyArn?: string;
 };
 
 export class SSMRole extends Construct {
   constructor(scope: Construct, id: string, props: SSMRoleProps) {
     super(scope, id);
 
-    const { bucketName, tableName, destination } = props;
+    const { bucketName, tableName, destination, keyArn } = props;
     const { REGION, ACCOUNT_ID } = Aws;
 
     // DynamoDB permissions for Vault:
@@ -57,7 +58,6 @@ export class SSMRole extends Construct {
                 'dynamodb:DescribeReservedCapacity',
                 'dynamodb:BatchGetItem',
                 'dynamodb:BatchWriteItem',
-                'dynamodb:CreateTable',
                 'dynamodb:DeleteItem',
                 'dynamodb:GetItem',
                 'dynamodb:GetRecords',
@@ -74,6 +74,20 @@ export class SSMRole extends Construct {
             new PolicyStatement({
               actions: ['dynamodb:ListTables'],
               resources: [`arn:aws:dynamodb:${REGION}:${ACCOUNT_ID}:table/*`],
+            }),
+          ],
+        })
+      );
+    }
+
+    if (keyArn) {
+      role.attachInlinePolicy(
+        new Policy(this, 'KeyPolicy', {
+          policyName: 'key',
+          statements: [
+            new PolicyStatement({
+              actions: ['kms:Encrypt', 'kms:Decrypt', 'kms:DescribeKey'],
+              resources: [keyArn],
             }),
           ],
         })

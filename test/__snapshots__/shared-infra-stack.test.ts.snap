@@ -8,6 +8,11 @@ Object {
         "Ref": "BucketD7FEB781",
       },
     },
+    "KmsKeyOutputB5767BE1": Object {
+      "Value": Object {
+        "Ref": "KmsKeyBFFB7B85",
+      },
+    },
     "VaultDynamoDBVaultTable80F08FA5": Object {
       "Value": Object {
         "Ref": "VaultDynamoDBTable7271446C",
@@ -124,6 +129,41 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "KmsKeyBFFB7B85": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "KeyPolicy": Object {
+          "Statement": Array [
+            Object {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Retain",
     },
     "VaultDynamoDBTable7271446C": Object {
       "DeletionPolicy": "Retain",
