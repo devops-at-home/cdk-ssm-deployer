@@ -5,6 +5,7 @@ import { DestinationStack } from './stacks/destination';
 
 type Params = {
   destinations: string[];
+  githubOrg: string;
 };
 
 export class MyStack extends Stack {
@@ -13,12 +14,12 @@ export class MyStack extends Stack {
 
     // Load params
     const params: Params = this.node.tryGetContext('params');
-    const { destinations } = params;
 
     // Create shared infra
     const { bucket, table, key } = new SharedInfraStack(
       this,
-      'SharedInfraStack'
+      'SharedInfraStack',
+      { ...params }
     );
     const { bucketName } = bucket;
     const { tableName } = table;
@@ -26,7 +27,7 @@ export class MyStack extends Stack {
 
     // TODO: SSM Document for downloading package to temp folder and running script
 
-    destinations.forEach((destination) => {
+    params.destinations.forEach((destination) => {
       new DestinationStack(this, `DestinationStack-${destination}`, {
         bucketName,
         tableName,

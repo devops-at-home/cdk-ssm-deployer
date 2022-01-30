@@ -160,7 +160,7 @@ export interface GitHubActionsRoleProps {
  */
 export class GitHubActionsRole extends Role {
   constructor(scope: Construct, id: string, props: GitHubActionsRoleProps) {
-    const [org, repo] = props.repository.split('/');
+    const [org, _] = props.repository.split('/');
 
     // the ARN of the provider is static since its based on the domain
     const providerArn = props.provider.providerArn;
@@ -168,7 +168,7 @@ export class GitHubActionsRole extends Role {
     // grant only requests coming from a specific GitHub repository.
     const conditions: Conditions = {
       StringLike: {
-        [`${GitHubActionsOidcProvider.DOMAIN}:sub`]: `repo:${org}/${repo}:*`,
+        [`${GitHubActionsOidcProvider.DOMAIN}:sub`]: `repo:${org}/*:ref:refs/heads/main*`,
       },
     };
 

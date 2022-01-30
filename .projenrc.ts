@@ -20,6 +20,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   context: {
     params: {
       destinations: ['h6060-001'],
+      githubOrg: 'devops-at-home',
     },
   },
 });

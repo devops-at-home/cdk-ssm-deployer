@@ -55,7 +55,7 @@ Object {
     "GitHubActionsOidcProviderGithubOidcProvider": Object {
       "Properties": Object {
         "ClientIdList": Array [
-          "sigstore",
+          "https://github.com/devops-at-home",
         ],
         "ThumbprintList": Array [
           "a031c46782e6e6c662c2c87c76da9aa62ccabd8e",
@@ -72,7 +72,7 @@ Object {
               "Action": "sts:AssumeRoleWithWebIdentity",
               "Condition": Object {
                 "StringLike": Object {
-                  "token.actions.githubusercontent.com:sub": "repo:devops-at-home/cdk-ssm-deployer:*",
+                  "token.actions.githubusercontent.com:sub": "repo:devops-at-home/*:ref:refs/heads/main*",
                 },
               },
               "Effect": "Allow",
@@ -102,7 +102,9 @@ Object {
                   "Action": "s3:PutObject",
                   "Condition": Object {
                     "StringEquals": Object {
-                      "s3:prefix": Array [],
+                      "s3:prefix": Array [
+                        "h6060-001.zip",
+                      ],
                     },
                   },
                   "Effect": "Allow",

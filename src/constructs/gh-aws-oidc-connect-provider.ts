@@ -52,13 +52,13 @@ export class GitHubActionsOidcProvider
    */
   public readonly providerArn: string;
 
-  constructor(scope: Construct, id: string) {
+  constructor(scope: Construct, id: string, clientIdList: string[]) {
     super(scope, id);
 
     const provider = new CfnOIDCProvider(scope, `${id}.GithubOidcProvider`, {
       url: `https://${GitHubActionsOidcProvider.DOMAIN}`,
       thumbprintList: [GitHubActionsOidcProvider.THUMBPRINT],
-      clientIdList: ['sigstore'],
+      clientIdList,
     });
 
     this.providerArn = provider.attrArn;
