@@ -8,19 +8,21 @@ interface DestinationStackProps extends NestedStackProps {
   tableName: string;
   destination: string;
   keyArn: string;
+  containers: string[];
 }
 
 export class DestinationStack extends NestedStack {
   constructor(scope: Construct, id: string, props: DestinationStackProps) {
     super(scope, id, props);
 
-    const { bucketName, tableName, destination, keyArn } = props;
+    const { bucketName, tableName, destination, keyArn, containers } = props;
 
     new SSMRole(this, 'Role', {
       destination,
       bucketName,
       tableName,
       keyArn,
+      containers,
     });
 
     // new SSMDeployment(this, 'Deployment', {

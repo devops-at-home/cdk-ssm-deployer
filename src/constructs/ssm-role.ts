@@ -1,4 +1,5 @@
 import { Aws } from 'aws-cdk-lib';
+import { Repository } from 'aws-cdk-lib/aws-ecr';
 import {
   ManagedPolicy,
   Policy,
@@ -14,13 +15,14 @@ type SSMRoleProps = {
   tableName?: string;
   destination: string;
   keyArn?: string;
+  containers?: string[];
 };
 
 export class SSMRole extends Construct {
   constructor(scope: Construct, id: string, props: SSMRoleProps) {
     super(scope, id);
 
-    const { bucketName, tableName, destination, keyArn } = props;
+    const { bucketName, tableName, destination, keyArn, containers } = props;
     const { REGION, ACCOUNT_ID } = Aws;
 
     // DynamoDB permissions for Vault:
@@ -92,6 +94,14 @@ export class SSMRole extends Construct {
           ],
         })
       );
+    }
+
+    if (containers) {
+      containers.forEach((container) => {
+        Repository.fromRepositoryName(this, container, container).grantPull(
+          role
+        );
+      });
     }
   }
 }

@@ -5,7 +5,10 @@
       "destinations": [
         "h6060-001"
       ],
-      "githubOrg": "devops-at-home"
+      "githubOrg": "devops-at-home",
+      "containers": [
+        "hello-kubernetes"
+      ]
     }
   },
   "output": "cdk.out",

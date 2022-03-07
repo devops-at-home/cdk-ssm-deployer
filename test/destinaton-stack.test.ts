@@ -10,6 +10,7 @@ describe('DestinationStack', () => {
     destination: 'h6060-001',
     keyArn:
       'arn:aws:kms:ap-southeast-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab',
+    containers: ['hello-kubenetes'],
   });
   const template = Template.fromStack(nestedStack);
 

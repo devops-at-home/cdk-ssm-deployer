@@ -6,6 +6,7 @@ import { DestinationStack } from './stacks/destination';
 type Params = {
   destinations: string[];
   githubOrg: string;
+  containers: string[];
 };
 
 export class MyStack extends Stack {
@@ -14,6 +15,7 @@ export class MyStack extends Stack {
 
     // Load params
     const params: Params = this.node.tryGetContext('params');
+    const { containers } = params;
 
     // Create shared infra
     const { bucket, table, key } = new SharedInfraStack(
@@ -33,6 +35,7 @@ export class MyStack extends Stack {
         tableName,
         destination,
         keyArn,
+        containers,
       });
     });
   }
