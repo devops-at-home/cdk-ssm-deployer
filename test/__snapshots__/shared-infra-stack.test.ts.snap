@@ -100,13 +100,6 @@ Object {
               "Statement": Array [
                 Object {
                   "Action": "s3:PutObject",
-                  "Condition": Object {
-                    "StringEquals": Object {
-                      "s3:prefix": Array [
-                        "h6060-001.zip",
-                      ],
-                    },
-                  },
                   "Effect": "Allow",
                   "Resource": Object {
                     "Fn::Join": Array [
@@ -118,7 +111,7 @@ Object {
                             "Arn",
                           ],
                         },
-                        "/*",
+                        "/h6060-001.zip",
                       ],
                     ],
                   },
