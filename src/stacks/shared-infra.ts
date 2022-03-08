@@ -46,7 +46,7 @@ export class SharedInfraStack extends NestedStack {
         s3: new PolicyDocument({
           statements: [
             new PolicyStatement({
-              resources: destZips(bucket.bucketArn, destinations),
+              resources: destToResource(bucket.bucketArn, destinations),
               actions: ['s3:PutObject'],
             }),
           ],
@@ -56,8 +56,8 @@ export class SharedInfraStack extends NestedStack {
   }
 }
 
-const destZips = (bucketArn: string, destinations: string[]) => {
+const destToResource = (bucketArn: string, destinations: string[]) => {
   return destinations.map((dest) => {
-    return `${bucketArn}/${dest}.zip`;
+    return `${bucketArn}/${dest}.tar.gz`;
   });
 };
