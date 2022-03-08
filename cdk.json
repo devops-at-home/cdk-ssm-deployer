@@ -3,7 +3,8 @@
   "context": {
     "params": {
       "destinations": [
-        "h6060-001"
+        "h6060-001",
+        "h6060-002"
       ],
       "githubOrg": "devops-at-home",
       "containers": [

@@ -19,7 +19,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   gitignore: ['.idea'],
   context: {
     params: {
-      destinations: ['h6060-001'],
+      destinations: ['h6060-001', 'h6060-002'],
       githubOrg: 'devops-at-home',
       containers: ['hello-kubernetes'],
     },
