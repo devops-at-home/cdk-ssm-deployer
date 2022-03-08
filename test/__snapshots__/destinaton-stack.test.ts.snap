@@ -140,7 +140,7 @@ Object {
                 Object {
                   "Action": "s3:GetObject",
                   "Effect": "Allow",
-                  "Resource": "arn:aws:s3:::bucketName/h6060-001.zip",
+                  "Resource": "arn:aws:s3:::bucketName/h6060-001.tar.gz",
                 },
               ],
               "Version": "2012-10-17",

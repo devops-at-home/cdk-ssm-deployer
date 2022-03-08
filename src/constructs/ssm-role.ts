@@ -39,7 +39,7 @@ export class SSMRole extends Construct {
           statements: [
             new PolicyStatement({
               actions: ['s3:GetObject'],
-              resources: [`arn:aws:s3:::${bucketName}/${destination}.zip`],
+              resources: [`arn:aws:s3:::${bucketName}/${destination}.tar.gz`],
             }),
           ],
         }),

@@ -23,7 +23,7 @@ export class SSMDeployment extends Construct {
           eventName: ['PutObject'],
           requestParameters: {
             bucketName,
-            key: `${destination}.zip`,
+            key: `${destination}.tar.gz`,
           },
         },
       },
