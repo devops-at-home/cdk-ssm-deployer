@@ -4,7 +4,7 @@ const name = 'cdk-ssm-deployer';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   defaultReleaseBranch: 'main',
-  cdkVersion: '2.15.0',
+  cdkVersion: '2.51.1',
   name,
   packageName: name.toLowerCase().replace(/\./g, '-'),
   licensed: false,
