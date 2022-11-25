@@ -1,17 +1,5 @@
 {
   "app": "npx ts-node -P tsconfig.json --prefer-ts-exts src/main.ts",
-  "context": {
-    "params": {
-      "destinations": [
-        "h6060-001",
-        "h6060-002"
-      ],
-      "githubOrg": "devops-at-home",
-      "containers": [
-        "hello-kubernetes"
-      ]
-    }
-  },
   "output": "cdk.out",
   "build": "npx projen bundle",
   "watch": {
