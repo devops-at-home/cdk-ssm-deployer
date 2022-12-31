@@ -11,6 +11,9 @@
     "cdk.out": true,
     "coverage": true,
     "node_modules": true,
-    "test-reports": true
+    "test-reports": true,
+    ".prettier*": true,
+    "tsconfig*": true,
+    "cdk*": true
   }
 }

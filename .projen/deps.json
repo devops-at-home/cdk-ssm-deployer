@@ -37,6 +37,10 @@
       "type": "build"
     },
     {
+      "name": "prettier",
+      "type": "build"
+    },
+    {
       "name": "projen",
       "type": "build"
     },
@@ -51,6 +55,10 @@
     {
       "name": "typescript",
       "type": "build"
+    },
+    {
+      "name": "aws-cdk-github-oidc",
+      "type": "runtime"
     },
     {
       "name": "aws-cdk-lib",
