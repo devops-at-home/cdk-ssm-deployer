@@ -22,6 +22,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     },
     githubOptions: {
         pullRequestLint: false,
+        mergify: false, // Mergify disabled on private repos
     },
     deps: ['aws-cdk-github-oidc'],
     devDeps: ['esbuild@0', '@types/aws-lambda', '@types/node'],
