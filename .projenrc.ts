@@ -6,7 +6,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     authorName: 'DevOps@Home',
     authorUrl: 'https://devops-at-ho.me',
     defaultReleaseBranch: 'main',
-    cdkVersion: '2.51.1',
+    cdkVersion: '2.58.1',
     name,
     packageName: name.toLowerCase().replace(/\./g, '-'),
     licensed: false,
@@ -23,7 +23,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     githubOptions: {
         pullRequestLint: false,
     },
-    deps: ['aws-lambda', 'aws-cdk-github-oidc'],
+    deps: ['aws-cdk-github-oidc'],
     devDeps: ['esbuild@0', '@types/aws-lambda', '@types/node'],
     gitignore: ['.idea'],
 });

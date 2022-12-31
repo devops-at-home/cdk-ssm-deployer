@@ -16,8 +16,8 @@ const instances: DestinationInstance[] = [
     },
 ];
 
-const account = ''; // TODO
-const region = 'ap-southeast-1';
+const account = '075487384540';
+const region = 'ap-southeast-2';
 
 export const config = (): AppFactoryProps[] => {
     return [
