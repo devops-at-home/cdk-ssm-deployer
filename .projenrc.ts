@@ -27,6 +27,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     deps: ['aws-cdk-github-oidc'],
     devDeps: ['esbuild@0', '@types/aws-lambda', '@types/node'],
     gitignore: ['.idea'],
+    release: true,
 });
 
 project.addTask('cdk-deploy-test', {
