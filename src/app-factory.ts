@@ -15,10 +15,14 @@ export const appFactory = (app: App, props: AppFactoryProps) => {
         },
     };
 
-    new SharedStack(app, `SSMDeployer-SharedStack${props.environment === 'test' ? '-test' : ''}`, {
-        ...stackProps,
-        environment,
-    });
+    const shareStack = new SharedStack(
+        app,
+        `SSMDeployer-SharedStack${props.environment === 'test' ? '-test' : ''}`,
+        {
+            ...stackProps,
+            environment,
+        }
+    );
 
     // if (props.oidcConfig) {
     //     new OIDCStack(app, 'SSMDeployer-OIDCStack', {
@@ -34,9 +38,10 @@ export const appFactory = (app: App, props: AppFactoryProps) => {
     }
 
     instances.forEach(({ name }) => {
-        new DestinationStack(app, `SSMDeployer-DestinationStack-${name}`, {
+        const destStack = new DestinationStack(app, `SSMDeployer-DestinationStack-${name}`, {
             environment,
             instanceName: name,
         });
+        destStack.addDependency(shareStack);
     });
 };

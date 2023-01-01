@@ -28,6 +28,22 @@
       "name": "bundle",
       "description": "Prepare assets"
     },
+    "cdk-deploy-prod": {
+      "name": "cdk-deploy-prod",
+      "steps": [
+        {
+          "exec": "cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???"
+        }
+      ]
+    },
+    "cdk-deploy-test": {
+      "name": "cdk-deploy-test",
+      "steps": [
+        {
+          "exec": "cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack-test SSMDeployer-DestinationStack-h6???-???-test"
+        }
+      ]
+    },
     "clobber": {
       "name": "clobber",
       "description": "hard resets to HEAD of origin and cleans the local repo",
