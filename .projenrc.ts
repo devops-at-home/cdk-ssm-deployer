@@ -27,6 +27,16 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     deps: ['aws-cdk-github-oidc'],
     devDeps: ['esbuild@0', '@types/aws-lambda', '@types/node'],
     gitignore: ['.idea'],
+    release: true,
+});
+
+project.addTask('cdk-deploy-test', {
+    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack-test SSMDeployer-DestinationStack-h6???-???-test',
+});
+
+// Remember to add SSMDeployer-SSMDocsStack
+project.addTask('cdk-deploy-prod', {
+    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???',
 });
 
 project.jest!.addTestMatch('**/?(*.)@(spec|test).[tj]s?(x)');

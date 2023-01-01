@@ -210,6 +210,176 @@ Object {
 }
 `;
 
+exports[`AppFactory snapshot tests SSMDeployer-OIDCStack 1`] = `
+Object {
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0": Object {
+      "DependsOn": Array [
+        "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": "cdk-hnb659fds-assets-075487384540-ap-southeast-2",
+          "S3Key": "2f66f19d22493bb970ab7d0e10dab28b63e97d1ad344b1ed6dd9696c15c05a6c.zip",
+        },
+        "Handler": "__entrypoint__.handler",
+        "MemorySize": 128,
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs16.x",
+        "Timeout": 900,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderRole517FED65": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Sub": "arn:\${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+          },
+        ],
+        "Policies": Array [
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "iam:CreateOpenIDConnectProvider",
+                    "iam:DeleteOpenIDConnectProvider",
+                    "iam:UpdateOpenIDConnectProviderThumbprint",
+                    "iam:AddClientIDToOpenIDConnectProvider",
+                    "iam:RemoveClientIDFromOpenIDConnectProvider",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "Inline",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DeployRole885297C3": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Condition": Object {
+                "StringEquals": Object {
+                  "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                },
+                "StringLike": Object {
+                  "token.actions.githubusercontent.com:sub": "repo:devops-at-home/cdk-ssm-deployer:ref:refs/tags/v*",
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "Federated": Object {
+                  "Ref": "GithubProvider1CDE27EB",
+                },
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/AdministratorAccess",
+              ],
+            ],
+          },
+        ],
+        "MaxSessionDuration": 7200,
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "GithubProvider1CDE27EB": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "ClientIDList": Array [
+          "sts.amazonaws.com",
+        ],
+        "CodeHash": "2f66f19d22493bb970ab7d0e10dab28b63e97d1ad344b1ed6dd9696c15c05a6c",
+        "ServiceToken": Object {
+          "Fn::GetAtt": Array [
+            "CustomAWSCDKOpenIdConnectProviderCustomResourceProviderHandlerF2C543E0",
+            "Arn",
+          ],
+        },
+        "ThumbprintList": Array [
+          "a031c46782e6e6c662c2c87c76da9aa62ccabd8e",
+          "6938fd4d98bab03faadb97b34396831e3780aea1",
+        ],
+        "Url": "https://token.actions.githubusercontent.com",
+      },
+      "Type": "Custom::AWSCDKOpenIdConnectProvider",
+      "UpdateReplacePolicy": "Delete",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
 exports[`AppFactory snapshot tests SSMDeployer-SSMDocsStack 1`] = `
 Object {
   "Parameters": Object {

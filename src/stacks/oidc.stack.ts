@@ -18,12 +18,11 @@ export class OIDCStack extends Stack {
 
         const { owner, repo, filter } = props;
 
-        // TODO: Allow pass in provider
         const provider = props.lookup
-            ? GithubActionsIdentityProvider.fromAccount(scope, 'GithubProvider')
-            : new GithubActionsIdentityProvider(scope, 'GithubProvider');
+            ? GithubActionsIdentityProvider.fromAccount(this, 'GithubProvider')
+            : new GithubActionsIdentityProvider(this, 'GithubProvider');
 
-        const deployRole = new GithubActionsRole(scope, 'DeployRole', {
+        const deployRole = new GithubActionsRole(this, 'DeployRole', {
             provider,
             owner,
             repo,
