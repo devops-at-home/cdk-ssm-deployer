@@ -1,6 +1,6 @@
 import { App, StackProps } from 'aws-cdk-lib';
 import { DestinationStack } from './stacks/destination.stack';
-// import { OIDCStack } from './stacks/oidc.stack';
+import { OIDCStack } from './stacks/oidc.stack';
 import { SharedStack } from './stacks/shared.stack';
 import { SSMDocsStack } from './stacks/ssm-docs.stack';
 import { AppFactoryProps } from './types';
@@ -24,12 +24,12 @@ export const appFactory = (app: App, props: AppFactoryProps) => {
         }
     );
 
-    // if (props.oidcConfig) {
-    //     new OIDCStack(app, 'SSMDeployer-OIDCStack', {
-    //         ...stackProps,
-    //         ...props.oidcConfig,
-    //     });
-    // }
+    if (props.oidcConfig) {
+        new OIDCStack(app, 'SSMDeployer-OIDCStack', {
+            ...stackProps,
+            ...props.oidcConfig,
+        });
+    }
 
     if (props.environment === 'prod') {
         new SSMDocsStack(app, 'SSMDeployer-SSMDocsStack', {

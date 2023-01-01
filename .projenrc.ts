@@ -33,9 +33,9 @@ project.addTask('cdk-deploy-test', {
     exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack-test SSMDeployer-DestinationStack-h6???-???-test',
 });
 
-// Remember to add SSMDeployer-SSMDocsStack and SSMDeployer-OIDCStack
+// Remember to add SSMDeployer-SSMDocsStack
 project.addTask('cdk-deploy-prod', {
-    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???',
+    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???',
 });
 
 project.jest!.addTestMatch('**/?(*.)@(spec|test).[tj]s?(x)');

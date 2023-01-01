@@ -32,7 +32,7 @@
       "name": "cdk-deploy-prod",
       "steps": [
         {
-          "exec": "cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???"
+          "exec": "cdk deploy --ci --require-approval never --progress events SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???"
         }
       ]
     },
