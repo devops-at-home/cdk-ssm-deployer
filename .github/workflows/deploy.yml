@@ -18,11 +18,13 @@ jobs:
             latest_commit: ${{ steps.git_remote.outputs.latest_commit }}
         environment:
             name: ${{ inputs.target-env }}
+        env:
+            ENVIRONMENT: ${{ inputs.target-env }}
         steps:
-            - run: echo "🎉 target environment ${{ inputs.target-env }}"
+            - run: echo "🎉 target environment $ENVIRONMENT"
             # - run: echo "🎉 target environment inputs.target-env"
-            - run: echo "🍏 is test  ${{ inputs.target-env }} == 'test'"
-            - run: echo "🐧 is prod  ${{ inputs.target-env }} == 'prod'"
+            # - run: echo "🍏 is test ${{ inputs.target-env }} == 'test'"
+            # - run: echo "🐧 is prod ${{ inputs.target-env }} == 'prod'"
 
             # - name: Download artifact from build job
             #   uses: actions/download-artifact@v3
@@ -74,4 +76,4 @@ jobs:
 
             # - run: yarn install
 
-            # - run: yarn "cdk-deploy-${{ inputs.target-env }}"
+            # - run: yarn cdk-deploy-$ENVIRONMENT

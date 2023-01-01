@@ -11,5 +11,5 @@ jobs:
                 target: [test, prod]
         uses: ./.github/workflows/deploy.yml
         with:
-            target-env: ${ { matrix.target } }
+            target-env: ${{ matrix.target }}
         # secrets: inherit
