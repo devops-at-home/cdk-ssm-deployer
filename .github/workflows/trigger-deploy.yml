@@ -4,17 +4,17 @@ on:
     workflow_dispatch: {}
 
 jobs:
-    deploy:
-        name: Deploy to test and prod environments
-        permissions:
-            id-token: write
-            contents: read
-        runs-on: ubuntu-latest
-        steps:
-            - run: echo "🎉 some text"
+    # deploy:
+    #     name: Deploy to test and prod environments
+    #     permissions:
+    #         id-token: write
+    #         contents: read
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - run: echo "🎉 some text"
 
     ReuseableMatrixJobForDeployment:
-        needs: build
+        # needs: build
         strategy:
             fail-fast: true
             matrix:
