@@ -1,6 +1,7 @@
 import { App, StackProps } from 'aws-cdk-lib';
 import { DestinationStack } from './stacks/destination.stack';
 import { OIDCStack } from './stacks/oidc.stack';
+import { RegistrationStack } from './stacks/registration.stack';
 import { SharedStack } from './stacks/shared.stack';
 import { SSMDocsStack } from './stacks/ssm-docs.stack';
 import { AppFactoryProps } from './types';
@@ -42,6 +43,15 @@ export const appFactory = (app: App, props: AppFactoryProps) => {
             environment,
             instanceName: name,
         });
+
         destStack.addDependency(shareStack);
+
+        const regStack = new RegistrationStack(app, `SSMDeployer-RegistrationStack-${name}`, {
+            environment,
+            instanceName: name,
+            roleArn: destStack.roleArn,
+        });
+
+        regStack.addDependency(shareStack);
     });
 };
