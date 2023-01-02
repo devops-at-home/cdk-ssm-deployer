@@ -92,24 +92,22 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.get-release-tag.outputs.RELEASE_TAG }}
-        run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o output.tar.gz'
+        run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o release.tar.gz'
       - name: Extract and get folder name
         id: extract-folder
-        run: tar xf output.tar.gz; echo "FOLDER_NAME=$(find . -name "${GITHUB_REPOSITORY_OWNER}*")" >> $GITHUB_OUTPUT
+        run: tar xf release.tar.gz; echo "FOLDER_NAME=$(find . -name '${GITHUB_REPOSITORY_OWNER}*')" >> $GITHUB_OUTPUT
       - name: Assume role using OIDC
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: ${{ secrets.OIDC_ROLE }}
           aws-region: ap-southeast-2
       - name: Install package dependencies
-        env:
-          WORKING_DIR: ${{ steps.extract-folder.outputs.FOLDER_NAME }}
         run: ls -l; yarn install
         working-directory: ${{ steps.extract-folder.outputs.FOLDER_NAME }}
       - name: Deploy CDK
         env:
           ENVIRONMENT: ${{ matrix.target }}
-        run: echo $ENVIRONMENT; yarn synth
+        run: echo $ENVIRONMENT; yarn cdk-deploy-$ENVIRONMENT
         working-directory: ${{ steps.extract-folder.outputs.FOLDER_NAME }}
     strategy:
       fail-fast: true

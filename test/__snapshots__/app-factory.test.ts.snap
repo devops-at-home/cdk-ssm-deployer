@@ -298,7 +298,7 @@ Object {
                   "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
                 },
                 "StringLike": Object {
-                  "token.actions.githubusercontent.com:sub": "repo:devops-at-home/cdk-ssm-deployer:ref:refs/tags/v*",
+                  "token.actions.githubusercontent.com:sub": "repo:devops-at-home/cdk-ssm-deployer:ref:/refs/head/main",
                 },
               },
               "Effect": "Allow",

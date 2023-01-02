@@ -68,12 +68,12 @@ project.release?.addJobs({
                     GH_TOKEN: '${{ github.token }}',
                     RELEASE_TAG: '${{ steps.get-release-tag.outputs.RELEASE_TAG }}',
                 },
-                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o output.tar.gz',
+                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o release.tar.gz',
             },
             {
                 name: 'Extract and get folder name',
                 id: 'extract-folder',
-                run: 'tar xf output.tar.gz; echo "FOLDER_NAME=$(find . -name "${GITHUB_REPOSITORY_OWNER}*")" >> $GITHUB_OUTPUT',
+                run: 'tar xf release.tar.gz; echo "FOLDER_NAME=$(find . -name \'${GITHUB_REPOSITORY_OWNER}*\')" >> $GITHUB_OUTPUT',
             },
             {
                 name: 'Assume role using OIDC',
@@ -85,9 +85,6 @@ project.release?.addJobs({
             },
             {
                 name: 'Install package dependencies',
-                env: {
-                    WORKING_DIR: '${{ steps.extract-folder.outputs.FOLDER_NAME }}',
-                },
                 workingDirectory: '${{ steps.extract-folder.outputs.FOLDER_NAME }}',
                 run: 'ls -l; yarn install',
             },
@@ -97,8 +94,7 @@ project.release?.addJobs({
                     ENVIRONMENT: '${{ matrix.target }}',
                 },
                 workingDirectory: '${{ steps.extract-folder.outputs.FOLDER_NAME }}',
-                run: 'echo $ENVIRONMENT; yarn synth',
-                // run: 'yarn cdk-deploy-$ENVIRONMENT',
+                run: 'echo $ENVIRONMENT; yarn cdk-deploy-$ENVIRONMENT',
             },
         ],
     },
