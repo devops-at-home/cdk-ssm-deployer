@@ -42,7 +42,7 @@ jobs:
               id: get-release
               run: |
                   RELEASE_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest"
-                  RELEASE_JSON=`curl --header 'authorisation: token ${{ github.token }}' -s $RELEASE_URL`
+                  RELEASE_JSON=`curl -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' -H 'Authorization: Bearer ${{ github.token }}' -s $RELEASE_URL`
                   VERSION=`echo $RELEASE_JSON | jq '.tag_name' | tr -d '"' | sed -e "s/^v//"`
                   echo "::set-output name=VERSION::$VERSION"
                   echo "Version $VERSION"
