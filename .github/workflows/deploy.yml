@@ -48,7 +48,7 @@ jobs:
               env:
                   OUTPUT_FILE: ${{ steps.download-tarball.outputs.OUTPUT_FILE }}
               run: |
-                  tar -xfz $OUTPUT_FILE
+                  tar -xf $OUTPUT_FILE
                   ls -l
 
             # - name: Assume role using OIDC
