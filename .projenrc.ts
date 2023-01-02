@@ -45,7 +45,7 @@ project.release?.addJobs({
         env: {
             CI: 'true',
         },
-        name: 'Deployment to ${{ matrix.target }} for ${{ github.ref }}',
+        name: 'Deployment to ${{ matrix.target }} for ${{ github.ref_name }}',
         steps: [
             // {
             //     name: 'Checkout',
@@ -90,8 +90,11 @@ project.release?.addJobs({
             },
             {
                 name: 'Install package dependencies',
+                env: {
+                    WORKING_DIR: '${{ steps.extract-folder.outputs.FOLDER_NAME }}',
+                },
                 workingDirectory: '${{ steps.extract-folder.outputs.FOLDER_NAME }}',
-                run: 'yarn install',
+                run: 'ls -l; yarn install',
             },
             {
                 name: 'Deploy CDK',

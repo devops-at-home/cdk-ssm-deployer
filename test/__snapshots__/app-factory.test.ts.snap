@@ -329,6 +329,27 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
+    "DeployRoleDefaultPolicyDC930F96": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRoleWithWebIdentity",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "DeployRoleDefaultPolicyDC930F96",
+        "Roles": Array [
+          Object {
+            "Ref": "DeployRole885297C3",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "GithubProvider1CDE27EB": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
