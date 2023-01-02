@@ -67,12 +67,13 @@ jobs:
           GITHUB_REF: ${{ github.ref }}
         run: errout=$(mktemp); gh release create $(cat dist/releasetag.txt) -R $GITHUB_REPOSITORY -F dist/changelog.md -t $(cat dist/releasetag.txt) --target $GITHUB_REF 2> $errout && true; exitcode=$?; if [ $exitcode -ne 0 ] && ! grep -q "Release.tag_name already exists" $errout; then cat $errout; exit $exitcode; fi
   deploy_aws:
-    name: Deployment to ${{ matrix.target }} for ${{ github.ref_name }} (${{ github.ref }})
+    name: Deployment to ${{ matrix.target }}
     needs: release_github
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
+    environment: ${{ matrix.target }}
     env:
       CI: "true"
     steps:
@@ -95,7 +96,7 @@ jobs:
         run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o release.tar.gz'
       - name: Extract and get folder name
         id: extract-folder
-        run: tar xf release.tar.gz; echo 'FOLDER_NAME=$(find . -name "${GITHUB_REPOSITORY_OWNER}*")' >> $GITHUB_OUTPUT
+        run: tar xf release.tar.gz; echo $GITHUB_REPOSITORY_OWNER; echo "FOLDER_NAME=$(find . -maxdepth 1 -name '${GITHUB_REPOSITORY_OWNER}*')" >> $GITHUB_OUTPUT
       - name: Assume role using OIDC
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -110,6 +111,7 @@ jobs:
         run: echo $ENVIRONMENT; yarn cdk-deploy-$ENVIRONMENT
         working-directory: ${{ steps.extract-folder.outputs.FOLDER_NAME }}
     strategy:
+      max-parallel: 1
       fail-fast: true
       matrix:
         include:
