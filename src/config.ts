@@ -16,7 +16,7 @@ const instances: DestinationInstance[] = [
     },
 ];
 
-const account = '075487384540';
+const account = process.env.CDK_DEFAULT_ACCOUNT!;
 const region = 'ap-southeast-2';
 
 export const config = (): AppFactoryProps[] => {

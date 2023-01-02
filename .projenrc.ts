@@ -62,11 +62,8 @@ project.release?.addJobs({
                 with: { name: 'build-artifact', path: 'dist' },
             },
             {
-                name: 'Download release',
-                env: {
-                    GH_TOKEN: '${{ github.token }}',
-                },
-                run: 'cat dist/releasetag.txt; gh release download $(cat dist/releasetag.txt)',
+                name: 'Switch branch',
+                run: 'cat dist/releasetag.txt; git checkout tags/$(cat dist/releasetag.txt)',
             },
             {
                 name: 'Next steps',
@@ -76,8 +73,7 @@ project.release?.addJobs({
                 name: 'Assume role using OIDC',
                 uses: 'aws-actions/configure-aws-credentials@v1-node16',
                 with: {
-                    'role-to-assume':
-                        'arn:aws:iam::075487384540:role/SSMDeployer-OIDCStack-DeployRole885297C3-F1O3UKF3OLJY',
+                    'role-to-assume': '{{ env.OIDC_ROLE }}',
                     'aws-region': 'ap-southeast-2',
                 },
             },

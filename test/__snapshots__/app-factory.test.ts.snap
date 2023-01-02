@@ -226,7 +226,9 @@ Object {
       ],
       "Properties": Object {
         "Code": Object {
-          "S3Bucket": "cdk-hnb659fds-assets-075487384540-ap-southeast-2",
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
+          },
           "S3Key": "2f66f19d22493bb970ab7d0e10dab28b63e97d1ad344b1ed6dd9696c15c05a6c.zip",
         },
         "Handler": "__entrypoint__.handler",
