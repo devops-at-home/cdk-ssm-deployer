@@ -41,7 +41,10 @@ project.release?.addJobs({
         },
         runsOn: ['ubuntu-latest'],
         needs: ['release_github'],
-        permissions: { contents: JobPermission.READ },
+        permissions: { contents: JobPermission.READ, idToken: JobPermission.WRITE },
+        env: {
+            CI: 'true',
+        },
         steps: [
             {
                 name: 'Setup node',
@@ -54,12 +57,16 @@ project.release?.addJobs({
                 with: { name: 'build-artifact', path: 'dist' },
             },
             {
+                name: 'Download release',
+                run: 'gh release download $(cat dist/releasetag.txt)',
+            },
+            {
                 name: 'Next steps',
                 run: 'ls -l; ls -l dist',
             },
             {
                 name: 'Assume role using OIDC',
-                uses: 'aws-actions/configure-aws-credentials@master',
+                uses: 'aws-actions/configure-aws-credentials@v1-node16',
                 with: {
                     'role-to-assume':
                         'arn:aws:iam::075487384540:role/SSMDeployer-OIDCStack-DeployRole885297C3-F1O3UKF3OLJY',
