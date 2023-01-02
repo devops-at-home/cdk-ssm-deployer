@@ -58,6 +58,9 @@ project.release?.addJobs({
             },
             {
                 name: 'Download release',
+                env: {
+                    GH_TOKEN: '${{ github.token }}',
+                },
                 run: 'gh release download $(cat dist/releasetag.txt)',
             },
             {
