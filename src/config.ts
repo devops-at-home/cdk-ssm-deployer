@@ -4,7 +4,8 @@ import { AppFactoryProps, DestinationInstance, Environment } from './types';
 const oidcConfig: OidcConfig = {
     owner: 'devops-at-home',
     repo: 'cdk-ssm-deployer',
-    filter: 'ref:/refs/head/main',
+    // filter: 'ref:/refs/head/main', TODO: tighten permissions here
+    filter: '*',
     lookup: false,
 };
 
