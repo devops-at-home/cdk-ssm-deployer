@@ -73,7 +73,7 @@ project.release?.addJobs({
                     RELEASE_TAG: '${{ steps.get-release-tag.outputs.RELEASE_TAG }}',
                 },
                 // run: 'cat dist/releasetag.txt; git checkout tags/$(cat dist/releasetag.txt)', -o cdk-ssm-deployer.tar.gz
-                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L https://github.com/devops-at-home/cdk-ssm-deployer/archive/refs/tags/$RELEASE_TAG.tar.gz',
+                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}"',
             },
             {
                 name: 'Next steps',
