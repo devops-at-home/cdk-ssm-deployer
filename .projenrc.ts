@@ -45,13 +45,8 @@ project.release?.addJobs({
         env: {
             CI: 'true',
         },
-        name: 'Deployment to ${{ matrix.target }} for ${{ github.ref_name }}',
+        name: 'Deployment to ${{ matrix.target }} for ${{ github.ref_name }} (${{ github.ref }})',
         steps: [
-            // {
-            //     name: 'Checkout',
-            //     uses: 'actions/checkout@v3',
-            //     with: { fetchDepth: 0 },
-            // },
             {
                 name: 'Setup node',
                 uses: 'actions/setup-node@v3',
