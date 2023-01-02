@@ -72,8 +72,8 @@ project.release?.addJobs({
                     GH_TOKEN: '${{ github.token }}',
                     RELEASE_TAG: '${{ steps.get-release-tag.outputs.RELEASE_TAG }}',
                 },
-                // run: 'cat dist/releasetag.txt; git checkout tags/$(cat dist/releasetag.txt)',
-                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L https://github.com/devops-at-home/cdk-ssm-deployer/archive/refs/tags/$RELEASE_TAG.tar.gz -o cdk-ssm-deployer.tar.gz',
+                // run: 'cat dist/releasetag.txt; git checkout tags/$(cat dist/releasetag.txt)', -o cdk-ssm-deployer.tar.gz
+                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L https://github.com/devops-at-home/cdk-ssm-deployer/archive/refs/tags/$RELEASE_TAG.tar.gz',
             },
             {
                 name: 'Next steps',
@@ -83,7 +83,7 @@ project.release?.addJobs({
                 name: 'Assume role using OIDC',
                 uses: 'aws-actions/configure-aws-credentials@v1-node16',
                 with: {
-                    'role-to-assume': '{{ env.OIDC_ROLE }}',
+                    'role-to-assume': '{{ secrets.OIDC_ROLE }}',
                     'aws-region': 'ap-southeast-2',
                 },
             },
