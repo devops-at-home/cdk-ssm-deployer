@@ -38,6 +38,7 @@ project.release?.addJobs({
             matrix: {
                 include: [{ target: 'test' }, { target: 'prod' }],
             },
+            maxParallel: 1,
         },
         runsOn: ['ubuntu-latest'],
         needs: ['release_github'],
@@ -45,6 +46,7 @@ project.release?.addJobs({
         env: {
             CI: 'true',
         },
+        environment: '${{ matrix.target }}',
         name: 'Deployment to ${{ matrix.target }}',
         steps: [
             {
@@ -73,7 +75,7 @@ project.release?.addJobs({
             {
                 name: 'Extract and get folder name',
                 id: 'extract-folder',
-                run: 'tar xf release.tar.gz; echo \'FOLDER_NAME=$(find . -name "${GITHUB_REPOSITORY_OWNER}*")\' >> $GITHUB_OUTPUT',
+                run: 'tar xf release.tar.gz; echo $GITHUB_REPOSITORY_OWNER; echo "FOLDER_NAME=$(find . -maxdepth 1 -name \'${GITHUB_REPOSITORY_OWNER}*\')" >> $GITHUB_OUTPUT',
             },
             {
                 name: 'Assume role using OIDC',
