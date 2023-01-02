@@ -74,11 +74,11 @@ project.release?.addJobs({
                     RELEASE_TAG: '${{ steps.get-release-tag.outputs.RELEASE_TAG }}',
                 },
                 // run: 'cat dist/releasetag.txt; git checkout tags/$(cat dist/releasetag.txt)', -o cdk-ssm-deployer.tar.gz
-                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" | tar xf',
+                run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o output.tar.gz',
             },
             {
                 name: 'Next steps',
-                run: 'ls -l; ls -l dist',
+                run: 'ls -l; ls -l dist; tar xf output.tar.gz; ls -l; ls -l dist',
             },
             {
                 name: 'Assume role using OIDC',
