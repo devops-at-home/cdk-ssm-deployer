@@ -21,33 +21,18 @@ jobs:
         env:
             ENVIRONMENT: ${{ inputs.target-env }}
         steps:
-            - run: echo "🎉 target environment $ENVIRONMENT"
-            # - run: echo "🎉 target environment inputs.target-env"
-            # - run: echo "🍏 is test ${{ inputs.target-env }} == 'test'"
-            # - run: echo "🐧 is prod ${{ inputs.target-env }} == 'prod'"
-
-            # - name: Download artifact from build job
-            #   uses: actions/download-artifact@v3
-            #   with:
-            #     name: cdk-ssm-deployer
-
-            # - name: unzip artifact for deployment
-            #   run: unzip release.zip
-
-            # - name: Git clone the repository
-            #   uses: actions/checkout@v1
-            # Download and unzip the release
-
+            - name: Echo environment
+              run: echo "🎉 target environment $ENVIRONMENT"
             - name: Get Github release
               id: get-release
               run: |
                   RELEASE_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest"
                   RELEASE_JSON=`curl -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' -H 'Authorization: Bearer ${{ github.token }}' -s $RELEASE_URL`
                   VERSION=`echo $RELEASE_JSON | jq '.tag_name' | tr -d '"' | sed -e "s/^v//"`
-                  echo "::set-output name=VERSION::$VERSION"
-                  echo "Version $VERSION"
+                  echo "{VERSION}={$VERSION}" >> $GITHUB_OUTPUT
+                  echo "Version: $VERSION"
                   TARBALL_URL=`echo $RELEASE_JSON | jq '.tarball_url' | tr -d '"'`
-                  echo "::set-output name=TARBALL_URL::$TARBALL_URL"
+                  echo "{TARBALL_URL}={$TARBALL_URL}" >> $GITHUB_OUTPUT
                   echo "Tarball URL: $TARBALL_URL"
             - name: Download tarball
               id: download-tarball
@@ -55,13 +40,15 @@ jobs:
                   VERSION: ${{ steps.get-release.outputs.VERSION }}
                   TARBALL_URL: ${{ steps.get-release.outputs.TARBALL_URL }}
               run: |
-                  OUTPUT_FILE="${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}.VERSION.tar.gz"
+                  OUTPUT_FILE="${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}.${VERSION}.tar.gz"
                   echo "Output file: $OUTPUT_FILE"
-                  echo "::set-output name=OUTPUT_FILE::$OUTPUT_FILE"
-                  curl --header 'authorisation: token ${{ github.token }}' -L $TARBALL_URL -o $OUTPUT_FILE
+                  echo "{OUTPUT_FILE}={$OUTPUT_FILE}" >> $GITHUB_OUTPUT
+                  curl -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' -H 'Authorization: Bearer github.token }}' -L $TARBALL_URL -o $OUTPUT_FILE
             - name: Extract tarball and enter dir
+              env:
+                  OUTPUT_FILE: ${{ steps.download-tarball.outputs.OUTPUT_FILE }}
               run: |
-                  tar -xfz ${{ steps.download-tarball.outputs.OUTPUT_FILE }}
+                  tar -xfz $OUTPUT_FILE
                   ls -l
 
             # - name: Assume role using OIDC
@@ -69,11 +56,11 @@ jobs:
             #   with:
             #       role-to-assume: arn:aws:iam::075487384540:role/SSMDeployer-OIDCStack-DeployRole885297C3-F1O3UKF3OLJY
             #       aws-region: ap-southeast-2
-
-            # - uses: actions/setup-node@v2
+            # - name: Install NodeJS and Yarn
+            #   uses: actions/setup-node@v2
             #   with:
             #       node-version: '18'
-
-            # - run: yarn install
-
-            # - run: yarn cdk-deploy-$ENVIRONMENT
+            # - name: Install package dependencies
+            #   run: yarn install
+            # - name: Deploy CDK
+            #   run: yarn cdk-deploy-$ENVIRONMENT
