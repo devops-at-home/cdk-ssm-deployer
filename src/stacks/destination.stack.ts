@@ -8,11 +8,14 @@ interface DestinationStackProps extends SSMRoleConfig, StackProps {
 }
 
 export class DestinationStack extends Stack {
+    public readonly roleArn: string;
     constructor(scope: Construct, id: string, props: DestinationStackProps) {
         super(scope, id, props);
 
-        new SSMRole(this, 'Role', {
+        const { roleArn } = new SSMRole(this, 'Role', {
             ...props,
         });
+
+        this.roleArn = roleArn;
     }
 }
