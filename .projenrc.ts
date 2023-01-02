@@ -1,4 +1,5 @@
 import { awscdk } from 'projen';
+import { JobPermission } from 'projen/lib/github/workflows-model';
 
 const name = 'cdk-ssm-deployer';
 
@@ -28,6 +29,27 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     devDeps: ['esbuild@0', '@types/aws-lambda', '@types/node'],
     gitignore: ['.idea'],
     release: true,
+});
+
+project.release?.addJobs({
+    ReuseableMatrixJobForDeployment: {
+        strategy: {
+            failFast: true,
+            matrix: {
+                include: [{ target: 'test' }, { target: 'prod' }],
+            },
+        },
+        runsOn: ['ubuntu-latest'],
+        permissions: { contents: JobPermission.READ },
+        steps: [
+            {
+                uses: './.github/workflows/deploy.yml',
+                with: {
+                    'target-env': '${{ matrix.target }}',
+                },
+            },
+        ],
+    },
 });
 
 project.addTask('cdk-deploy-test', {
