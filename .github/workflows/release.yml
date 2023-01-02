@@ -95,7 +95,7 @@ jobs:
         run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o release.tar.gz'
       - name: Extract and get folder name
         id: extract-folder
-        run: tar xf release.tar.gz; echo "FOLDER_NAME=$(find . -name '${GITHUB_REPOSITORY_OWNER}*')" >> $GITHUB_OUTPUT
+        run: tar xf release.tar.gz; echo 'FOLDER_NAME=$(find . -name "${GITHUB_REPOSITORY_OWNER}*")' >> $GITHUB_OUTPUT
       - name: Assume role using OIDC
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
