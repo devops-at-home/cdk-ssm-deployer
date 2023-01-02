@@ -73,23 +73,24 @@ project.release?.addJobs({
                     GH_TOKEN: '${{ github.token }}',
                     RELEASE_TAG: '${{ steps.get-release-tag.outputs.RELEASE_TAG }}',
                 },
-                // run: 'cat dist/releasetag.txt; git checkout tags/$(cat dist/releasetag.txt)', -o cdk-ssm-deployer.tar.gz
                 run: 'curl -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -L "https://api.github.com/repos/${GITHUB_REPOSITORY}/tarball/${RELEASE_TAG}" -o output.tar.gz',
             },
             {
-                name: 'Next steps',
-                run: 'ls -l; ls -l dist; tar xf output.tar.gz; ls -l; ls -l dist',
+                name: 'Extract and get folder name',
+                id: 'extract-folder',
+                run: 'tar xf output.tar.gz; echo "FOLDER_NAME=$(find . -name "${GITHUB_REPOSITORY_OWNER}*")" >> $GITHUB_OUTPUT',
             },
             {
                 name: 'Assume role using OIDC',
                 uses: 'aws-actions/configure-aws-credentials@v1-node16',
                 with: {
-                    'role-to-assume': '{{ secrets.OIDC_ROLE }}',
+                    'role-to-assume': '${{ secrets.OIDC_ROLE }}',
                     'aws-region': 'ap-southeast-2',
                 },
             },
             {
                 name: 'Install package dependencies',
+                workingDirectory: '${{ steps.extract-folder.outputs.FOLDER_NAME }}',
                 run: 'yarn install',
             },
             {
@@ -97,6 +98,7 @@ project.release?.addJobs({
                 env: {
                     ENVIRONMENT: '${{ matrix.target }}',
                 },
+                workingDirectory: '${{ steps.extract-folder.outputs.FOLDER_NAME }}',
                 run: 'echo $ENVIRONMENT; yarn synth',
                 // run: 'yarn cdk-deploy-$ENVIRONMENT',
             },
