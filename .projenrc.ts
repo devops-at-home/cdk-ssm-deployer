@@ -73,7 +73,7 @@ project.release?.addJobs({
             {
                 name: 'Extract and get folder name',
                 id: 'extract-folder',
-                run: 'tar xf release.tar.gz; echo "FOLDER_NAME=$(find . -name \'${GITHUB_REPOSITORY_OWNER}*\')" >> $GITHUB_OUTPUT',
+                run: 'tar xf release.tar.gz; echo \'FOLDER_NAME=$(find . -name "${GITHUB_REPOSITORY_OWNER}*")\' >> $GITHUB_OUTPUT',
             },
             {
                 name: 'Assume role using OIDC',
