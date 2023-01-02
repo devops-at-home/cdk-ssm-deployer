@@ -47,6 +47,7 @@ export const appFactory = (app: App, props: AppFactoryProps) => {
         destStack.addDependency(shareStack);
 
         const regStack = new RegistrationStack(app, `SSMDeployer-RegistrationStack-${name}`, {
+            environment,
             instanceName: name,
             roleArn: destStack.roleArn,
         });

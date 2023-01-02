@@ -3,6 +3,7 @@ import {
     AwsCustomResource,
     AwsCustomResourcePolicy,
     PhysicalResourceId,
+    PhysicalResourceIdReference,
 } from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 
@@ -11,11 +12,15 @@ export type SSMRegistrationProps = {
     roleArn: string;
 };
 
+interface SSMRegistrationConfig extends SSMRegistrationProps {
+    registrationLimit: number;
+}
+
 export class SSMRegistration extends Construct {
-    constructor(scope: Construct, id: string, props: SSMRegistrationProps) {
+    constructor(scope: Construct, id: string, props: SSMRegistrationConfig) {
         super(scope, id);
 
-        const { instanceName, roleArn } = props;
+        const { instanceName, roleArn, registrationLimit } = props;
 
         const response = new AwsCustomResource(this, 'CreateActivation', {
             policy: AwsCustomResourcePolicy.fromSdkCalls({
@@ -25,8 +30,8 @@ export class SSMRegistration extends Construct {
                 action: 'createActivation',
                 service: 'ssm',
                 parameters: {
-                    ExpirationDate: new Date(Date.now()), // TODO
-                    RegistrationLimit: 1,
+                    ExpirationDate: '2026-01-01T00:00:00',
+                    RegistrationLimit: registrationLimit,
                     DefaultInstanceName: instanceName,
                     IamRole: roleArn,
                 },
@@ -36,7 +41,7 @@ export class SSMRegistration extends Construct {
                 action: 'deleteActivation',
                 service: 'ssm',
                 parameters: {
-                    ActivationId: '', // TODO
+                    ActivationId: new PhysicalResourceIdReference(),
                 },
             },
         });

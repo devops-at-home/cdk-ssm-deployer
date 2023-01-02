@@ -506,7 +506,7 @@ Object {
           "Fn::Join": Array [
             "",
             Array [
-              "{\\"action\\":\\"createActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ExpirationDate\\":\\"2023-01-02T15:05:54.007Z\\",\\"RegistrationLimit\\":1,\\"DefaultInstanceName\\":\\"h6060-003\\",\\"IamRole\\":\\"",
+              "{\\"action\\":\\"createActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ExpirationDate\\":\\"2026-01-01T00:00:00\\",\\"RegistrationLimit\\":1,\\"DefaultInstanceName\\":\\"h6060-003\\",\\"IamRole\\":\\"",
               Object {
                 "Fn::ImportValue": "SSMDeployer-DestinationStack-h6060-003:ExportsOutputFnGetAttRole8C6B06EBArn7A51C2EF",
               },
@@ -514,7 +514,7 @@ Object {
             ],
           ],
         },
-        "Delete": "{\\"action\\":\\"deleteActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ActivationId\\":\\"\\"}}",
+        "Delete": "{\\"action\\":\\"deleteActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ActivationId\\":\\"PHYSICAL:RESOURCEID:\\"}}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
@@ -681,7 +681,7 @@ Object {
           "Fn::Join": Array [
             "",
             Array [
-              "{\\"action\\":\\"createActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ExpirationDate\\":\\"2023-01-02T15:05:53.909Z\\",\\"RegistrationLimit\\":1,\\"DefaultInstanceName\\":\\"h6060-003-test\\",\\"IamRole\\":\\"",
+              "{\\"action\\":\\"createActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ExpirationDate\\":\\"2026-01-01T00:00:00\\",\\"RegistrationLimit\\":9999,\\"DefaultInstanceName\\":\\"h6060-003-test\\",\\"IamRole\\":\\"",
               Object {
                 "Fn::ImportValue": "SSMDeployer-DestinationStack-h6060-003-test:ExportsOutputFnGetAttRole8C6B06EBArn7A51C2EF",
               },
@@ -689,7 +689,7 @@ Object {
             ],
           ],
         },
-        "Delete": "{\\"action\\":\\"deleteActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ActivationId\\":\\"\\"}}",
+        "Delete": "{\\"action\\":\\"deleteActivation\\",\\"service\\":\\"ssm\\",\\"parameters\\":{\\"ActivationId\\":\\"PHYSICAL:RESOURCEID:\\"}}",
         "InstallLatestAwsSdk": true,
         "ServiceToken": Object {
           "Fn::GetAtt": Array [
