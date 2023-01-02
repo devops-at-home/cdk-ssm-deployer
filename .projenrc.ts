@@ -32,7 +32,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 });
 
 project.release?.addJobs({
-    ReuseableMatrixJobForDeployment: {
+    deploy_aws: {
         strategy: {
             failFast: true,
             matrix: {
@@ -40,13 +40,43 @@ project.release?.addJobs({
             },
         },
         runsOn: ['ubuntu-latest'],
+        needs: ['release_github'],
         permissions: { contents: JobPermission.READ },
         steps: [
             {
-                uses: './.github/workflows/deploy.yml',
+                name: 'Setup node',
+                uses: 'actions/setup-node@v3',
+                with: { 'node-version': '14.x' },
+            },
+            {
+                name: 'Download build artifacts',
+                uses: 'actions/download-artifact@v3',
+                with: { name: 'build-artifact', path: 'dist' },
+            },
+            {
+                name: 'Next steps',
+                run: 'ls -l; ls -l dist',
+            },
+            {
+                name: 'Assume role using OIDC',
+                uses: 'aws-actions/configure-aws-credentials@master',
                 with: {
-                    'target-env': '${{ matrix.target }}',
+                    'role-to-assume':
+                        'arn:aws:iam::075487384540:role/SSMDeployer-OIDCStack-DeployRole885297C3-F1O3UKF3OLJY',
+                    'aws-region': 'ap-southeast-2',
                 },
+            },
+            {
+                name: 'Install package dependencies',
+                run: 'yarn install',
+            },
+            {
+                name: 'Deploy CDK',
+                env: {
+                    ENVIRONMENT: '${{ matrix.target }}',
+                },
+                run: 'echo $ENVIRONMENT; yarn synth',
+                // run: 'yarn cdk-deploy-$ENVIRONMENT',
             },
         ],
     },
