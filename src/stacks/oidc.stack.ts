@@ -1,7 +1,7 @@
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { GithubActionsIdentityProvider, GithubActionsRole } from 'aws-cdk-github-oidc';
-import { ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { ManagedPolicy } from 'aws-cdk-lib/aws-iam';
 
 interface OIDCStackProps extends StackProps, OidcConfig {}
 
@@ -33,12 +33,5 @@ export class OIDCStack extends Stack {
         // You may also use various "add*" policy methods!
         // "AdministratorAccess" not really a good idea, just for an example here:
         deployRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess'));
-
-        deployRole.addToPolicy(
-            new PolicyStatement({
-                actions: ['sts:AssumeRoleWithWebIdentity'],
-                resources: ['*'],
-            })
-        );
     }
 }
