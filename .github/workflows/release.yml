@@ -108,7 +108,7 @@ jobs:
       - name: Deploy CDK
         env:
           ENVIRONMENT: ${{ matrix.target }}
-        run: echo $ENVIRONMENT; yarn cdk-deploy-$ENVIRONMENT
+        run: yarn cdk-deploy-$ENVIRONMENT
         working-directory: ${{ steps.extract-folder.outputs.FOLDER_NAME }}
     strategy:
       max-parallel: 1
