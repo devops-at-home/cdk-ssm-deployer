@@ -29,10 +29,10 @@ jobs:
                   RELEASE_URL="https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest"
                   RELEASE_JSON=`curl -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' -H 'Authorization: Bearer ${{ github.token }}' -s $RELEASE_URL`
                   VERSION=`echo $RELEASE_JSON | jq '.tag_name' | tr -d '"' | sed -e "s/^v//"`
-                  echo "{VERSION}={$VERSION}" >> $GITHUB_OUTPUT
+                  echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
                   echo "Version: $VERSION"
                   TARBALL_URL=`echo $RELEASE_JSON | jq '.tarball_url' | tr -d '"'`
-                  echo "{TARBALL_URL}={$TARBALL_URL}" >> $GITHUB_OUTPUT
+                  echo "TARBALL_URL=$TARBALL_URL" >> $GITHUB_OUTPUT
                   echo "Tarball URL: $TARBALL_URL"
             - name: Download tarball
               id: download-tarball
@@ -42,8 +42,8 @@ jobs:
               run: |
                   OUTPUT_FILE="${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}.${VERSION}.tar.gz"
                   echo "Output file: $OUTPUT_FILE"
-                  echo "{OUTPUT_FILE}={$OUTPUT_FILE}" >> $GITHUB_OUTPUT
-                  curl -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' -H 'Authorization: Bearer github.token }}' -L $TARBALL_URL -o $OUTPUT_FILE
+                  echo "OUTPUT_FILE=$OUTPUT_FILE" >> $GITHUB_OUTPUT
+                  curl -H 'Accept: application/vnd.github+json' -H 'X-GitHub-Api-Version: 2022-11-28' -H 'Authorization: Bearer {{ github.token }}' -L $TARBALL_URL -o $OUTPUT_FILE
             - name: Extract tarball and enter dir
               env:
                   OUTPUT_FILE: ${{ steps.download-tarball.outputs.OUTPUT_FILE }}
