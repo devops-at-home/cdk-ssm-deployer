@@ -1,2 +1,3 @@
 # cdk-ssm-deployer
-Repo for deploying artefacts to edge locations with AWS SSM
+
+Deploys software to edge devices with AWS SSM
