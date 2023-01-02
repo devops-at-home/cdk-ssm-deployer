@@ -45,7 +45,7 @@ project.release?.addJobs({
         env: {
             CI: 'true',
         },
-        name: 'Deployment to ${{ matrix.target }} for ${{ github.ref_name }} (${{ github.ref }})',
+        name: 'Deployment to ${{ matrix.target }}',
         steps: [
             {
                 name: 'Setup node',
