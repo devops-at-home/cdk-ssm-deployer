@@ -47,6 +47,11 @@ project.release?.addJobs({
         },
         steps: [
             {
+                name: 'Checkout',
+                uses: 'actions/checkout@v3',
+                with: { fetchDepth: 0 },
+            },
+            {
                 name: 'Setup node',
                 uses: 'actions/setup-node@v3',
                 with: { 'node-version': '14.x' },
