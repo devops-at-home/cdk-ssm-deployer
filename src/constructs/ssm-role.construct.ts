@@ -29,7 +29,7 @@ export class SSMRole extends Construct {
         const exportName = getBucketExportName(environment);
 
         const role = new Role(this, 'Role', {
-            roleName: `SSMServiceRole-${instanceName}-${environment}`,
+            roleName: `SSMServiceRole-${instanceName}`,
             assumedBy: new ServicePrincipal('ssm.amazonaws.com'),
             managedPolicies: [
                 ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
