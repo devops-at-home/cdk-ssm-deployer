@@ -102,12 +102,12 @@ project.release?.addJobs({
 });
 
 project.addTask('cdk-deploy-test', {
-    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack-test SSMDeployer-DestinationStack-h6???-???-test',
+    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack-test SSMDeployer-*Stack-h6???-???-test',
 });
 
 // Remember to add SSMDeployer-SSMDocsStack
 project.addTask('cdk-deploy-prod', {
-    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???',
+    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-*Stack-h6???-???',
 });
 
 project.jest!.addTestMatch('**/?(*.)@(spec|test).[tj]s?(x)');

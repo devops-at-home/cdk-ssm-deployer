@@ -20,7 +20,7 @@ interface SSMRoleProps extends SSMRoleConfig {
 }
 
 export class SSMRole extends Construct {
-    public readonly roleArn: string;
+    public readonly roleName: string;
     constructor(scope: Construct, id: string, props: SSMRoleProps) {
         super(scope, id);
 
@@ -56,6 +56,6 @@ export class SSMRole extends Construct {
             });
         }
 
-        this.roleArn = role.roleArn;
+        this.roleName = role.roleName;
     }
 }

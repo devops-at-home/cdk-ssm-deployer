@@ -1,4 +1,6 @@
 import { CfnOutput } from 'aws-cdk-lib';
+import { PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import {
     AwsCustomResource,
     AwsCustomResourcePolicy,
@@ -9,37 +11,44 @@ import { Construct } from 'constructs';
 
 export type SSMRegistrationProps = {
     instanceName: string;
-    roleArn: string;
+    roleName: string;
 };
 
-interface SSMRegistrationConfig extends SSMRegistrationProps {
-    registrationLimit: number;
-}
-
 export class SSMRegistration extends Construct {
-    constructor(scope: Construct, id: string, props: SSMRegistrationConfig) {
+    constructor(scope: Construct, id: string, props: SSMRegistrationProps) {
         super(scope, id);
 
-        const { instanceName, roleArn, registrationLimit } = props;
+        const { instanceName, roleName } = props;
+
+        const role = new Role(this, 'AwsCustomResourceRole', {
+            assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+        });
+
+        role.addToPolicy(
+            new PolicyStatement({
+                actions: ['iam:PassRole'],
+                resources: ['*'],
+            })
+        );
 
         const response = new AwsCustomResource(this, 'CreateActivation', {
+            role,
             policy: AwsCustomResourcePolicy.fromSdkCalls({
                 resources: AwsCustomResourcePolicy.ANY_RESOURCE,
             }),
+            logRetention: RetentionDays.ONE_MONTH,
             onCreate: {
                 action: 'createActivation',
-                service: 'ssm',
+                service: 'SSM',
                 parameters: {
-                    ExpirationDate: '2026-01-01T00:00:00',
-                    RegistrationLimit: registrationLimit,
                     DefaultInstanceName: instanceName,
-                    IamRole: roleArn,
+                    IamRole: roleName,
                 },
                 physicalResourceId: PhysicalResourceId.fromResponse('ActivationId'),
             },
             onDelete: {
                 action: 'deleteActivation',
-                service: 'ssm',
+                service: 'SSM',
                 parameters: {
                     ActivationId: new PhysicalResourceIdReference(),
                 },
