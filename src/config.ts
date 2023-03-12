@@ -15,6 +15,11 @@ const instances: DestinationInstance[] = [
         test: true,
         prod: true,
     },
+    {
+        name: 'h6020-001',
+        test: false,
+        prod: true,
+    },
 ];
 
 const account = process.env.CDK_DEFAULT_ACCOUNT!;
