@@ -101,13 +101,16 @@ project.release?.addJobs({
     },
 });
 
+const cdkCmdStart = 'cdk deploy --ci --require-approval never --progress events';
+const cdkCmdEnd = '| sed -E "s/(SSMRegistrationActivation) = (.*)$/\\1 = masked/"';
+
 project.addTask('cdk-deploy-test', {
-    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-SharedStack-test SSMDeployer-*Stack-h6???-???-test',
+    exec: `${cdkCmdStart} SSMDeployer-SharedStack-test SSMDeployer-*Stack-h6???-???-test ${cdkCmdEnd}`,
 });
 
 // Remember to add SSMDeployer-SSMDocsStack
 project.addTask('cdk-deploy-prod', {
-    exec: 'cdk deploy --ci --require-approval never --progress events SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-*Stack-h6???-???',
+    exec: `${cdkCmdStart} SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-*Stack-h6???-??? ${cdkCmdEnd}`,
 });
 
 project.jest!.addTestMatch('**/?(*.)@(spec|test).[tj]s?(x)');
