@@ -65,12 +65,12 @@ export class SSMRole extends Construct {
             inlinePolicies['ts'] = new PolicyDocument({
                 statements: [
                     ...permissionsForEncryptedParam({
-                        kms: true,
+                        kms: false,
                         operation: 'get',
                         param: `${paramRoot}/${instanceName}/tsState`,
                     }),
                     ...permissionsForEncryptedParam({
-                        kms: true,
+                        kms: false,
                         operation: 'put',
                         param: `${paramRoot}/${instanceName}/tsState`,
                     }),
@@ -109,37 +109,44 @@ export const permissionsForEncryptedParam = (props: PermissionsForEncryptedParam
         return ssmKms({
             param,
             ssmAction: 'GetParameter',
-            kmsAction: kms ? 'Decrypt' : undefined,
+            kmsAction: kms ? 'Decrypt' : false,
         });
     }
     // Path for put
     return ssmKms({
         param,
         ssmAction: 'PutParameter',
-        kmsAction: kms ? 'Encrypt' : undefined,
+        kmsAction: kms ? 'Encrypt' : false,
     });
 };
 
 type ssmKmsProps = {
     param: string;
     ssmAction: 'PutParameter' | 'GetParameter';
-    kmsAction?: 'Decrypt' | 'Encrypt';
+    kmsAction: false | 'Decrypt' | 'Encrypt';
 };
 
 export const ssmKms = (props: ssmKmsProps) => {
-    return [
+    const statements = [
         new PolicyStatement({
             actions: [`ssm:${props.ssmAction}`],
             resources: [`arn:aws:ssm:${REGION}:${ACCOUNT_ID}:parameter${props.param}`],
         }),
-        new PolicyStatement({
-            actions: [`kms:${props.kmsAction}`],
-            resources: [`arn:aws:kms:${REGION}:${ACCOUNT_ID}:key/*`],
-            conditions: {
-                StringLike: {
-                    'kms:RequestAlias': 'aws/ssm',
-                },
-            },
-        }),
     ];
+
+    if (props.kmsAction) {
+        statements.push(
+            new PolicyStatement({
+                actions: [`kms:${props.kmsAction}`],
+                resources: [`arn:aws:kms:${REGION}:${ACCOUNT_ID}:key/*`],
+                conditions: {
+                    StringLike: {
+                        'kms:RequestAlias': 'aws/ssm',
+                    },
+                },
+            })
+        );
+    }
+
+    return statements;
 };

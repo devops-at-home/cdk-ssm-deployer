@@ -156,31 +156,6 @@ Object {
                   },
                 },
                 Object {
-                  "Action": "kms:Decrypt",
-                  "Condition": Object {
-                    "StringLike": Object {
-                      "kms:RequestAlias": "aws/ssm",
-                    },
-                  },
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::Join": Array [
-                      "",
-                      Array [
-                        "arn:aws:kms:",
-                        Object {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        Object {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":key/*",
-                      ],
-                    ],
-                  },
-                },
-                Object {
                   "Action": "ssm:PutParameter",
                   "Effect": "Allow",
                   "Resource": Object {
@@ -196,31 +171,6 @@ Object {
                           "Ref": "AWS::AccountId",
                         },
                         ":parameter/edgeDevices/h6020-001/tsState",
-                      ],
-                    ],
-                  },
-                },
-                Object {
-                  "Action": "kms:Encrypt",
-                  "Condition": Object {
-                    "StringLike": Object {
-                      "kms:RequestAlias": "aws/ssm",
-                    },
-                  },
-                  "Effect": "Allow",
-                  "Resource": Object {
-                    "Fn::Join": Array [
-                      "",
-                      Array [
-                        "arn:aws:kms:",
-                        Object {
-                          "Ref": "AWS::Region",
-                        },
-                        ":",
-                        Object {
-                          "Ref": "AWS::AccountId",
-                        },
-                        ":key/*",
                       ],
                     ],
                   },
