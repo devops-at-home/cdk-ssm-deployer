@@ -2,7 +2,6 @@ import { Aws, Fn } from 'aws-cdk-lib';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import {
     ManagedPolicy,
-    Policy,
     PolicyDocument,
     PolicyStatement,
     Role,
@@ -35,64 +34,58 @@ export class SSMRole extends Construct {
 
         const exportName = getBucketExportName(environment);
 
+        const inlinePolicies: { [name: string]: PolicyDocument } = {
+            backupBucket: new PolicyDocument({
+                statements: [
+                    new PolicyStatement({
+                        actions: ['s3:ListBucket'],
+                        resources: [Fn.importValue(exportName)],
+                    }),
+                    new PolicyStatement({
+                        actions: ['s3:*Object'],
+                        resources: [`${Fn.importValue(exportName)}/${instanceName}/*`],
+                    }),
+                ],
+            }),
+        };
+
+        if (features.k8s) {
+            inlinePolicies['k8s'] = new PolicyDocument({
+                statements: [
+                    ...permissionsForEncryptedParam({
+                        kms: true,
+                        operation: 'put',
+                        param: `${paramRoot}/${instanceName}/kubeconfig`,
+                    }),
+                ],
+            });
+        }
+
+        if (features.ts) {
+            inlinePolicies['ts'] = new PolicyDocument({
+                statements: [
+                    ...permissionsForEncryptedParam({
+                        kms: true,
+                        operation: 'get',
+                        param: `${paramRoot}/${instanceName}/tsState`,
+                    }),
+                    ...permissionsForEncryptedParam({
+                        kms: true,
+                        operation: 'put',
+                        param: `${paramRoot}/${instanceName}/tsState`,
+                    }),
+                ],
+            });
+        }
+
         const role = new Role(this, 'Role', {
             roleName: `SSMServiceRole-${instanceName}`,
             assumedBy: new ServicePrincipal('ssm.amazonaws.com'),
             managedPolicies: [
                 ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'),
             ],
-            inlinePolicies: {
-                backupBucket: new PolicyDocument({
-                    statements: [
-                        new PolicyStatement({
-                            actions: ['s3:ListBucket'],
-                            resources: [Fn.importValue(exportName)],
-                        }),
-                        new PolicyStatement({
-                            actions: ['s3:*Object'],
-                            resources: [`${Fn.importValue(exportName)}/${instanceName}/*`],
-                        }),
-                    ],
-                }),
-            },
+            inlinePolicies,
         });
-
-        // Permissions required for K8s
-        if (features.k8s) {
-            role.attachInlinePolicy(
-                new Policy(this, 'Policy-k8s', {
-                    policyName: `SSMServicePolicy-${instanceName}-k8s`,
-                    statements: [
-                        ...permissionsForEncryptedParam({
-                            kms: true,
-                            operation: 'put',
-                            param: `${paramRoot}/${instanceName}/kubeconfig`,
-                        }),
-                    ],
-                })
-            );
-        }
-
-        // Permissions required for Tailscale
-        if (features.ts) {
-            role.attachInlinePolicy(
-                new Policy(this, 'Policy-ts', {
-                    policyName: `SSMServicePolicy-${instanceName}-ts`,
-                    statements: [
-                        ...permissionsForEncryptedParam({
-                            kms: true,
-                            operation: 'get',
-                            param: `${paramRoot}/${instanceName}/tsState`,
-                        }),
-                        ...permissionsForEncryptedParam({
-                            kms: true,
-                            operation: 'put',
-                            param: `${paramRoot}/${instanceName}/tsState`,
-                        }),
-                    ],
-                })
-            );
-        }
 
         if (containers) {
             containers.forEach((container) => {
@@ -137,7 +130,7 @@ export const ssmKms = (props: ssmKmsProps) => {
     return [
         new PolicyStatement({
             actions: [`ssm:${props.ssmAction}`],
-            resources: [`arn:aws:ssm:${REGION}:${ACCOUNT_ID}parameter${props.param}`],
+            resources: [`arn:aws:ssm:${REGION}:${ACCOUNT_ID}:parameter${props.param}`],
         }),
         new PolicyStatement({
             actions: [`kms:${props.kmsAction}`],
