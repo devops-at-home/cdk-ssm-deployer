@@ -38,15 +38,18 @@ export const appFactory = (app: App, props: AppFactoryProps) => {
         });
     }
 
-    instances.forEach(({ name }) => {
+    instances.forEach(({ name, features }) => {
         const destStack = new DestinationStack(app, `SSMDeployer-DestinationStack-${name}`, {
+            ...stackProps,
             environment,
             instanceName: name,
+            features,
         });
 
         destStack.addDependency(shareStack);
 
         const regStack = new RegistrationStack(app, `SSMDeployer-RegistrationStack-${name}`, {
+            ...stackProps,
             instanceName: name,
             roleName: destStack.roleName,
         });
