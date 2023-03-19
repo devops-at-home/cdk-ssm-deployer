@@ -54,6 +54,7 @@ Object {
           "Fn::Join": Array [
             "",
             Array [
+              "h6020-001.",
               Object {
                 "Ref": "DNSZoneStringParamParentZoneNameParameter094F1DEF",
               },

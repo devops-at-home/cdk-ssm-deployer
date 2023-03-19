@@ -48,6 +48,7 @@ export class DNSZone extends Construct {
 
         new NsRecord(this, 'ParentNSRecord', {
             values: this.childHostedZone.hostedZoneNameServers!,
+            recordName: zoneName,
             zone: this.parentHostedZone,
         });
     }
