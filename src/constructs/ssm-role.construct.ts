@@ -14,23 +14,25 @@ import { Features } from '../types';
 export type SSMRoleConfig = {
     containers?: string[];
     features: Features;
+    paramPrefix?: string;
 };
 
-interface SSMRoleProps extends SSMRoleConfig {
+export interface SSMRoleProps extends SSMRoleConfig {
     instanceName: string;
     environment: string;
+    hostedZoneId?: string;
 }
 
 const { REGION, ACCOUNT_ID } = Aws;
-
-const paramRoot = '/edgeDevices';
 
 export class SSMRole extends Construct {
     public readonly roleName: string;
     constructor(scope: Construct, id: string, props: SSMRoleProps) {
         super(scope, id);
 
-        const { instanceName, containers, environment, features } = props;
+        const { instanceName, containers, environment, features, hostedZoneId } = props;
+
+        const paramPrefix = props.paramPrefix ?? '/edgeDevices';
 
         const exportName = getBucketExportName(environment);
 
@@ -55,7 +57,7 @@ export class SSMRole extends Construct {
                     ...permissionsForEncryptedParam({
                         kms: true,
                         operation: 'put',
-                        param: `${paramRoot}/${instanceName}/kubeconfig`,
+                        param: `${paramPrefix}/${instanceName}/kubeconfig`,
                     }),
                 ],
             });
@@ -67,12 +69,34 @@ export class SSMRole extends Construct {
                     ...permissionsForEncryptedParam({
                         kms: false,
                         operation: 'get',
-                        param: `${paramRoot}/${instanceName}/tsState`,
+                        param: `${paramPrefix}/${instanceName}/tsState`,
                     }),
                     ...permissionsForEncryptedParam({
                         kms: false,
                         operation: 'put',
-                        param: `${paramRoot}/${instanceName}/tsState`,
+                        param: `${paramPrefix}/${instanceName}/tsState`,
+                    }),
+                ],
+            });
+        }
+
+        if (typeof hostedZoneId !== undefined) {
+            inlinePolicies['dns'] = new PolicyDocument({
+                statements: [
+                    new PolicyStatement({
+                        actions: [
+                            'route53:ListResourceRecordSets',
+                            'route53:GetChange',
+                            'route53:ChangeResourceRecordSets',
+                        ],
+                        resources: [
+                            `arn:aws:route53:::hostedzone/${hostedZoneId}`,
+                            'arn:aws:route53:::change/*',
+                        ],
+                    }),
+                    new PolicyStatement({
+                        actions: ['route53:ListHostedZonesByName', 'route53:ListHostedZones'],
+                        resources: ['*'],
                     }),
                 ],
             });

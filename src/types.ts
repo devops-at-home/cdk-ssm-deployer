@@ -18,6 +18,7 @@ export type DestinationInstance = {
 export type Features = {
     k8s: boolean;
     ts: boolean;
+    dns: boolean;
 };
 
 const environments = ['test', 'prod'] as const;

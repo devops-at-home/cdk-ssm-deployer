@@ -1,6 +1,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { SSMRole, SSMRoleConfig } from '../constructs/ssm-role.construct';
+import { DNSZone } from '../constructs/dns-zone.construct';
+import { SSMRole, SSMRoleConfig, SSMRoleProps } from '../constructs/ssm-role.construct';
 
 interface DestinationStackProps extends SSMRoleConfig, StackProps {
     instanceName: string;
@@ -12,9 +13,18 @@ export class DestinationStack extends Stack {
     constructor(scope: Construct, id: string, props: DestinationStackProps) {
         super(scope, id, props);
 
-        const { roleName } = new SSMRole(this, 'Role', {
+        const ssmRoleProps: SSMRoleProps = {
             ...props,
-        });
+        };
+
+        if (props.features.dns) {
+            const { childHostedZone } = new DNSZone(this, 'DNSZone', {
+                ...props,
+            });
+            ssmRoleProps.hostedZoneId = childHostedZone.hostedZoneId;
+        }
+
+        const { roleName } = new SSMRole(this, 'Role', ssmRoleProps);
 
         this.roleName = roleName;
     }

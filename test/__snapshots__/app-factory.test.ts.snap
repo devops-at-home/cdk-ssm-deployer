@@ -18,8 +18,60 @@ Object {
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "DNSZoneStringParamParentZoneIdParameterFEB90702": Object {
+      "Default": "/edgeDevices/infra/parentZoneId",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "DNSZoneStringParamParentZoneNameParameter094F1DEF": Object {
+      "Default": "/edgeDevices/infra/parentZoneName",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
   },
   "Resources": Object {
+    "DNSZoneChildPublicHostedZoneF01DF53F": Object {
+      "Properties": Object {
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "h6020-001.",
+              Object {
+                "Ref": "DNSZoneStringParamParentZoneNameParameter094F1DEF",
+              },
+              ".",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Route53::HostedZone",
+    },
+    "DNSZoneParentNSRecord210EB96D": Object {
+      "Properties": Object {
+        "HostedZoneId": Object {
+          "Ref": "DNSZoneStringParamParentZoneIdParameterFEB90702",
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              Object {
+                "Ref": "DNSZoneStringParamParentZoneNameParameter094F1DEF",
+              },
+              ".",
+            ],
+          ],
+        },
+        "ResourceRecords": Object {
+          "Fn::GetAtt": Array [
+            "DNSZoneChildPublicHostedZoneF01DF53F",
+            "NameServers",
+          ],
+        },
+        "TTL": "1800",
+        "Type": "NS",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
     "Role8C6B06EB": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
@@ -180,6 +232,44 @@ Object {
             },
             "PolicyName": "ts",
           },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "route53:ListResourceRecordSets",
+                    "route53:GetChange",
+                    "route53:ChangeResourceRecordSets",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Array [
+                    Object {
+                      "Fn::Join": Array [
+                        "",
+                        Array [
+                          "arn:aws:route53:::hostedzone/",
+                          Object {
+                            "Ref": "DNSZoneChildPublicHostedZoneF01DF53F",
+                          },
+                        ],
+                      ],
+                    },
+                    "arn:aws:route53:::change/*",
+                  ],
+                },
+                Object {
+                  "Action": Array [
+                    "route53:ListHostedZonesByName",
+                    "route53:ListHostedZones",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "dns",
+          },
         ],
         "RoleName": "SSMServiceRole-h6020-001",
       },
@@ -295,6 +385,34 @@ Object {
             },
             "PolicyName": "backupBucket",
           },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "route53:ListResourceRecordSets",
+                    "route53:GetChange",
+                    "route53:ChangeResourceRecordSets",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Array [
+                    "arn:aws:route53:::hostedzone/undefined",
+                    "arn:aws:route53:::change/*",
+                  ],
+                },
+                Object {
+                  "Action": Array [
+                    "route53:ListHostedZonesByName",
+                    "route53:ListHostedZones",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "dns",
+          },
         ],
         "RoleName": "SSMServiceRole-h6060-003",
       },
@@ -409,6 +527,34 @@ Object {
               "Version": "2012-10-17",
             },
             "PolicyName": "backupBucket",
+          },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "route53:ListResourceRecordSets",
+                    "route53:GetChange",
+                    "route53:ChangeResourceRecordSets",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Array [
+                    "arn:aws:route53:::hostedzone/undefined",
+                    "arn:aws:route53:::change/*",
+                  ],
+                },
+                Object {
+                  "Action": Array [
+                    "route53:ListHostedZonesByName",
+                    "route53:ListHostedZones",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "dns",
           },
         ],
         "RoleName": "SSMServiceRole-h6060-003-test",
