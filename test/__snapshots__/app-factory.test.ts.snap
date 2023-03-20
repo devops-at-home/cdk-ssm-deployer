@@ -27,7 +27,7 @@ Object {
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "DNSZoneStringParamTsIPParameterBB033038": Object {
-      "Default": "/edgeDevices/instanceName/tsIP",
+      "Default": "/edgeDevices/h6020-001/tsIP",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
   },

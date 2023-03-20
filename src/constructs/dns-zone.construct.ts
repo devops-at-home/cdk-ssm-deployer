@@ -41,7 +41,7 @@ export class DNSZone extends Construct {
         const tsIP = StringParameter.fromStringParameterName(
             this,
             'StringParamTsIP',
-            `${paramPrefix}/instanceName/tsIP`
+            `${paramPrefix}/${instanceName}/tsIP`
         ).stringValue;
 
         const zoneName = `${instanceName}.${
