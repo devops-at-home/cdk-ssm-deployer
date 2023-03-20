@@ -26,8 +26,39 @@ Object {
       "Default": "/edgeDevices/infra/parentZoneName",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "DNSZoneStringParamTsIPParameterBB033038": Object {
+      "Default": "/edgeDevices/instanceName/tsIP",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
   },
   "Resources": Object {
+    "DNSZoneChildARecord6AB68E0A": Object {
+      "Properties": Object {
+        "HostedZoneId": Object {
+          "Ref": "DNSZoneChildPublicHostedZoneF01DF53F",
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "*.h6020-001.",
+              Object {
+                "Ref": "DNSZoneStringParamParentZoneNameParameter094F1DEF",
+              },
+              ".",
+            ],
+          ],
+        },
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "DNSZoneStringParamTsIPParameterBB033038",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
     "DNSZoneChildPublicHostedZoneF01DF53F": Object {
       "Properties": Object {
         "Name": Object {

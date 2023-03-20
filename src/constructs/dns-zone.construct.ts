@@ -1,11 +1,18 @@
 import { ResourceProps } from 'aws-cdk-lib';
-import { IPublicHostedZone, NsRecord, PublicHostedZone } from 'aws-cdk-lib/aws-route53';
+import {
+    ARecord,
+    IPublicHostedZone,
+    NsRecord,
+    PublicHostedZone,
+    RecordTarget,
+} from 'aws-cdk-lib/aws-route53';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 import { Construct } from 'constructs';
 
 interface DNSZoneProps extends ResourceProps {
     instanceName: string;
     environment: string;
+    paramPrefix?: string;
 }
 
 export class DNSZone extends Construct {
@@ -17,16 +24,24 @@ export class DNSZone extends Construct {
 
         const { instanceName, environment } = props;
 
+        const paramPrefix = props.paramPrefix ?? '/edgeDevices';
+
         const parentZoneId = StringParameter.fromStringParameterName(
             this,
             'StringParamParentZoneId',
-            '/edgeDevices/infra/parentZoneId'
+            `${paramPrefix}/infra/parentZoneId`
         ).stringValue;
 
         const parentZoneName = StringParameter.fromStringParameterName(
             this,
             'StringParamParentZoneName',
-            '/edgeDevices/infra/parentZoneName'
+            `${paramPrefix}/infra/parentZoneName`
+        ).stringValue;
+
+        const tsIP = StringParameter.fromStringParameterName(
+            this,
+            'StringParamTsIP',
+            `${paramPrefix}/instanceName/tsIP`
         ).stringValue;
 
         const zoneName = `${instanceName}.${
@@ -50,6 +65,12 @@ export class DNSZone extends Construct {
             values: this.childHostedZone.hostedZoneNameServers!,
             recordName: zoneName,
             zone: this.parentHostedZone,
+        });
+
+        new ARecord(this, 'ChildARecord', {
+            target: RecordTarget.fromIpAddresses(tsIP),
+            recordName: `*.${zoneName}`,
+            zone: this.childHostedZone,
         });
     }
 }
