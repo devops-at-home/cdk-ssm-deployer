@@ -11,6 +11,11 @@ Object {
         "Ref": "Role8C6B06EB",
       },
     },
+    "RoleOutputKey846F2DA0": Object {
+      "Value": Object {
+        "Ref": "RoleKeyF212B219",
+      },
+    },
   },
   "Parameters": Object {
     "BootstrapVersion": Object {
@@ -306,6 +311,73 @@ Object {
         "RoleName": "SSMServiceRole-h6020-001",
       },
       "Type": "AWS::IAM::Role",
+    },
+    "RoleDefaultPolicyDAAEFD87": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "kms:Decrypt",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "RoleKeyF212B219",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RoleDefaultPolicyDAAEFD87",
+        "Roles": Array [
+          Object {
+            "Ref": "Role8C6B06EB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RoleKeyF212B219": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "Description": "h6020-001",
+        "KeyPolicy": Object {
+          "Statement": Array [
+            Object {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Retain",
     },
   },
   "Rules": Object {

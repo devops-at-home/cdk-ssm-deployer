@@ -19,6 +19,7 @@ export type Features = {
     k8s: boolean;
     ts: boolean;
     dns: boolean;
+    kms: boolean;
 };
 
 const environments = ['test', 'prod'] as const;

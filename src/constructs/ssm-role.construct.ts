@@ -1,4 +1,4 @@
-import { Aws, Fn } from 'aws-cdk-lib';
+import { Aws, CfnOutput, Fn } from 'aws-cdk-lib';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import {
     ManagedPolicy,
@@ -7,6 +7,7 @@ import {
     Role,
     ServicePrincipal,
 } from 'aws-cdk-lib/aws-iam';
+import { Key } from 'aws-cdk-lib/aws-kms';
 import { Construct } from 'constructs';
 import { getBucketExportName } from '../stacks/shared.stack';
 import { Features } from '../types';
@@ -114,6 +115,17 @@ export class SSMRole extends Construct {
         if (containers) {
             containers.forEach((container) => {
                 Repository.fromRepositoryName(this, container, container).grantPull(role);
+            });
+        }
+
+        if (features.kms) {
+            const key = new Key(this, 'Key', {
+                description: instanceName,
+            });
+            key.grantEncryptDecrypt(role);
+
+            new CfnOutput(this, 'OutputKey', {
+                value: key.keyId,
             });
         }
 

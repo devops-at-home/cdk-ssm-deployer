@@ -18,6 +18,7 @@ const instances: DestinationInstance[] = [
             k8s: false,
             ts: false,
             dns: false,
+            kms: false,
         },
     },
     {
@@ -28,6 +29,7 @@ const instances: DestinationInstance[] = [
             k8s: true,
             ts: true,
             dns: true,
+            kms: true,
         },
     },
 ];
