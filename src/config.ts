@@ -14,11 +14,23 @@ const instances: DestinationInstance[] = [
         name: 'h6060-003',
         test: true,
         prod: true,
+        features: {
+            k8s: false,
+            ts: false,
+            dns: false,
+            kms: false,
+        },
     },
     {
         name: 'h6020-001',
         test: false,
         prod: true,
+        features: {
+            k8s: true,
+            ts: true,
+            dns: true,
+            kms: true,
+        },
     },
 ];
 
@@ -54,7 +66,7 @@ const getInstances = (
     }
     return instances
         .filter(({ test }) => test === true)
-        .map(({ name, prod, test }) => {
-            return { name: `${name}-test`, prod, test };
+        .map((props) => {
+            return { ...props, name: `${props.name}-test` };
         });
 };

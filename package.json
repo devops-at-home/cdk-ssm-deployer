@@ -34,12 +34,13 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.114",
+    "@types/aws-lambda": "^8.10.114",
     "@types/jest": "^27.5.2",
     "@types/node": "^14",
     "aws-cdk": "^2.68.0",
     "esbuild": "^0.17.12",
     "jest": "^27.5.1",
-    "jest-junit": "^13",
+    "jest-junit": "^15",
     "npm-check-updates": "^16",
     "prettier": "^2.8.4",
     "projen": "^0.68.10",
@@ -50,7 +51,7 @@
   },
   "dependencies": {
     "aws-cdk-github-oidc": "^2.3.2",
-    "aws-cdk-lib": "^2.68.0",
+    "aws-cdk-lib": "^2.69.0",
     "constructs": "^10.0.5"
   },
   "license": "UNLICENSED",

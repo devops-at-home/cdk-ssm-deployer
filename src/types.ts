@@ -12,7 +12,15 @@ export type DestinationInstance = {
     name: string;
     test: boolean;
     prod: boolean;
+    features: Features;
+};
+
+export type Features = {
+    k8s: boolean;
+    ts: boolean;
+    dns: boolean;
+    kms: boolean;
 };
 
 const environments = ['test', 'prod'] as const;
-export type Environment = typeof environments[number];
+export type Environment = (typeof environments)[number];

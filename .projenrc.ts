@@ -7,7 +7,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     authorName: 'DevOps@Home',
     authorUrl: 'https://devops-at-ho.me',
     defaultReleaseBranch: 'main',
-    cdkVersion: '2.68.0',
+    cdkVersion: '2.69.0',
     name,
     packageName: name.toLowerCase().replace(/\./g, '-'),
     licensed: false,
@@ -104,12 +104,12 @@ project.release?.addJobs({
 const cdkCmdStart = 'cdk deploy --ci --require-approval never --progress events';
 
 project.addTask('cdk-deploy-test', {
-    exec: `${cdkCmdStart} SSMDeployer-SharedStack-test SSMDeployer-*Stack-h6???-???-test`,
+    exec: `${cdkCmdStart} SSMDeployer-SharedStack-test SSMDeployer-DestinationStack-h6???-???-test`,
 });
 
 // Remember to add SSMDeployer-SSMDocsStack
 project.addTask('cdk-deploy-prod', {
-    exec: `${cdkCmdStart} SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-*Stack-h6???-???`,
+    exec: `${cdkCmdStart} SSMDeployer-OIDCStack SSMDeployer-SharedStack SSMDeployer-DestinationStack-h6???-???`,
 });
 
 project.jest!.addTestMatch('**/?(*.)@(spec|test).[tj]s?(x)');

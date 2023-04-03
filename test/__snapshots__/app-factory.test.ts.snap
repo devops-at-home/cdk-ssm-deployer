@@ -11,6 +11,11 @@ Object {
         "Ref": "Role8C6B06EB",
       },
     },
+    "RoleOutputKey846F2DA0": Object {
+      "Value": Object {
+        "Ref": "RoleKeyF212B219",
+      },
+    },
   },
   "Parameters": Object {
     "BootstrapVersion": Object {
@@ -18,8 +23,92 @@ Object {
       "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
+    "DNSZoneStringParamParentZoneIdParameterFEB90702": Object {
+      "Default": "/edgeDevices/infra/parentZoneId",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "DNSZoneStringParamParentZoneNameParameter094F1DEF": Object {
+      "Default": "/edgeDevices/infra/parentZoneName",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "DNSZoneStringParamTsIPParameterBB033038": Object {
+      "Default": "/edgeDevices/h6020-001/tsIP",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
   },
   "Resources": Object {
+    "DNSZoneChildARecord6AB68E0A": Object {
+      "Properties": Object {
+        "HostedZoneId": Object {
+          "Ref": "DNSZoneChildPublicHostedZoneF01DF53F",
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "*.h6020-001.",
+              Object {
+                "Ref": "DNSZoneStringParamParentZoneNameParameter094F1DEF",
+              },
+              ".",
+            ],
+          ],
+        },
+        "ResourceRecords": Array [
+          Object {
+            "Ref": "DNSZoneStringParamTsIPParameterBB033038",
+          },
+        ],
+        "TTL": "1800",
+        "Type": "A",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
+    "DNSZoneChildPublicHostedZoneF01DF53F": Object {
+      "Properties": Object {
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "h6020-001.",
+              Object {
+                "Ref": "DNSZoneStringParamParentZoneNameParameter094F1DEF",
+              },
+              ".",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Route53::HostedZone",
+    },
+    "DNSZoneParentNSRecord210EB96D": Object {
+      "Properties": Object {
+        "HostedZoneId": Object {
+          "Ref": "DNSZoneStringParamParentZoneIdParameterFEB90702",
+        },
+        "Name": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "h6020-001.",
+              Object {
+                "Ref": "DNSZoneStringParamParentZoneNameParameter094F1DEF",
+              },
+              ".",
+            ],
+          ],
+        },
+        "ResourceRecords": Object {
+          "Fn::GetAtt": Array [
+            "DNSZoneChildPublicHostedZoneF01DF53F",
+            "NameServers",
+          ],
+        },
+        "TTL": "1800",
+        "Type": "NS",
+      },
+      "Type": "AWS::Route53::RecordSet",
+    },
     "Role8C6B06EB": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
@@ -79,10 +168,216 @@ Object {
             },
             "PolicyName": "backupBucket",
           },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": "ssm:PutParameter",
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:aws:ssm:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/edgeDevices/h6020-001/kubeconfig",
+                      ],
+                    ],
+                  },
+                },
+                Object {
+                  "Action": "kms:Encrypt",
+                  "Condition": Object {
+                    "StringLike": Object {
+                      "kms:RequestAlias": "aws/ssm",
+                    },
+                  },
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:aws:kms:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":key/*",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "k8s",
+          },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": "ssm:GetParameter",
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:aws:ssm:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/edgeDevices/h6020-001/tsState",
+                      ],
+                    ],
+                  },
+                },
+                Object {
+                  "Action": "ssm:PutParameter",
+                  "Effect": "Allow",
+                  "Resource": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "arn:aws:ssm:",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ":",
+                        Object {
+                          "Ref": "AWS::AccountId",
+                        },
+                        ":parameter/edgeDevices/h6020-001/tsState",
+                      ],
+                    ],
+                  },
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "ts",
+          },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "route53:ListResourceRecordSets",
+                    "route53:GetChange",
+                    "route53:ChangeResourceRecordSets",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Array [
+                    Object {
+                      "Fn::Join": Array [
+                        "",
+                        Array [
+                          "arn:aws:route53:::hostedzone/",
+                          Object {
+                            "Ref": "DNSZoneChildPublicHostedZoneF01DF53F",
+                          },
+                        ],
+                      ],
+                    },
+                    "arn:aws:route53:::change/*",
+                  ],
+                },
+                Object {
+                  "Action": Array [
+                    "route53:ListHostedZonesByName",
+                    "route53:ListHostedZones",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "dns",
+          },
         ],
         "RoleName": "SSMServiceRole-h6020-001",
       },
       "Type": "AWS::IAM::Role",
+    },
+    "RoleDefaultPolicyDAAEFD87": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "kms:Decrypt",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "RoleKeyF212B219",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "RoleDefaultPolicyDAAEFD87",
+        "Roles": Array [
+          Object {
+            "Ref": "Role8C6B06EB",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RoleKeyF212B219": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "Description": "h6020-001",
+        "KeyPolicy": Object {
+          "Statement": Array [
+            Object {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Retain",
     },
   },
   "Rules": Object {
@@ -193,6 +488,34 @@ Object {
               "Version": "2012-10-17",
             },
             "PolicyName": "backupBucket",
+          },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "route53:ListResourceRecordSets",
+                    "route53:GetChange",
+                    "route53:ChangeResourceRecordSets",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Array [
+                    "arn:aws:route53:::hostedzone/undefined",
+                    "arn:aws:route53:::change/*",
+                  ],
+                },
+                Object {
+                  "Action": Array [
+                    "route53:ListHostedZonesByName",
+                    "route53:ListHostedZones",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "dns",
           },
         ],
         "RoleName": "SSMServiceRole-h6060-003",
@@ -308,6 +631,34 @@ Object {
               "Version": "2012-10-17",
             },
             "PolicyName": "backupBucket",
+          },
+          Object {
+            "PolicyDocument": Object {
+              "Statement": Array [
+                Object {
+                  "Action": Array [
+                    "route53:ListResourceRecordSets",
+                    "route53:GetChange",
+                    "route53:ChangeResourceRecordSets",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": Array [
+                    "arn:aws:route53:::hostedzone/undefined",
+                    "arn:aws:route53:::change/*",
+                  ],
+                },
+                Object {
+                  "Action": Array [
+                    "route53:ListHostedZonesByName",
+                    "route53:ListHostedZones",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+              "Version": "2012-10-17",
+            },
+            "PolicyName": "dns",
           },
         ],
         "RoleName": "SSMServiceRole-h6060-003-test",
@@ -559,7 +910,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
           "S3Key": "456cb0185a2fb74f65509142da5cecc43b25a8d960f32973e0a8f1ef6753606f.zip",
         },
@@ -606,8 +957,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
+          "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
           "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
         },
         "Handler": "index.handler",
@@ -843,7 +1195,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
           "S3Key": "456cb0185a2fb74f65509142da5cecc43b25a8d960f32973e0a8f1ef6753606f.zip",
         },
@@ -890,8 +1242,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
+          "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
           "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
         },
         "Handler": "index.handler",
@@ -1127,7 +1480,7 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
           "S3Key": "456cb0185a2fb74f65509142da5cecc43b25a8d960f32973e0a8f1ef6753606f.zip",
         },
@@ -1174,8 +1527,9 @@ Object {
       "Properties": Object {
         "Code": Object {
           "S3Bucket": Object {
-            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
+          "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
           "S3Key": "5fa1330271b8967d9254ba2d4a07144f8acefe8b77e6d6bba38261373a50d5f8.zip",
         },
         "Handler": "index.handler",
