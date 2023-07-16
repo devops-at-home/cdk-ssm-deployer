@@ -51,7 +51,7 @@ project.release?.addJobs({
             {
                 name: 'Setup node',
                 uses: 'actions/setup-node@v3',
-                with: { 'node-version': '14.x' },
+                with: { 'node-version': '16.x' },
             },
             {
                 name: 'Download build artifacts',
