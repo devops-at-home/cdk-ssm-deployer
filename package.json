@@ -36,7 +36,7 @@
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^27.5.2",
     "@types/node": "^16",
-    "aws-cdk": "^2.72.1",
+    "aws-cdk": "^2.94.0",
     "esbuild": "^0.19.2",
     "jest": "^27.5.1",
     "jest-junit": "^15",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "aws-cdk-github-oidc": "^2.4.1",
-    "aws-cdk-lib": "^2.72.1",
+    "aws-cdk-lib": "^2.94.0",
     "constructs": "^10.0.5"
   },
   "license": "UNLICENSED",

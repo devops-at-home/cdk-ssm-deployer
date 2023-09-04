@@ -7,7 +7,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     authorName: 'DevOps@Home',
     authorUrl: 'https://devops-at-ho.me',
     defaultReleaseBranch: 'main',
-    cdkVersion: '2.72.1',
+    cdkVersion: '2.94.0',
     name,
     packageName: name.toLowerCase().replace(/\./g, '-'),
     licensed: false,
