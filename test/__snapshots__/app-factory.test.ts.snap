@@ -908,7 +908,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
-          "S3Key": "ba5407117985fa148f61d8537da4904529e5c8264aed5d840f0a26700b5471fc.zip",
+          "S3Key": "f7ea374f7cc7ecbfa22fd671f8a9676e0f3f8978ba5fdbc52d48e42e03f81c55.zip",
         },
         "Handler": "index.handler",
         "Role": Object {
@@ -965,6 +965,7 @@ Object {
           ],
         },
         "Runtime": "nodejs18.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -1192,7 +1193,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
-          "S3Key": "ba5407117985fa148f61d8537da4904529e5c8264aed5d840f0a26700b5471fc.zip",
+          "S3Key": "f7ea374f7cc7ecbfa22fd671f8a9676e0f3f8978ba5fdbc52d48e42e03f81c55.zip",
         },
         "Handler": "index.handler",
         "Role": Object {
@@ -1249,6 +1250,7 @@ Object {
           ],
         },
         "Runtime": "nodejs18.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
@@ -1476,7 +1478,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-southeast-2",
           },
-          "S3Key": "ba5407117985fa148f61d8537da4904529e5c8264aed5d840f0a26700b5471fc.zip",
+          "S3Key": "f7ea374f7cc7ecbfa22fd671f8a9676e0f3f8978ba5fdbc52d48e42e03f81c55.zip",
         },
         "Handler": "index.handler",
         "Role": Object {
@@ -1533,6 +1535,7 @@ Object {
           ],
         },
         "Runtime": "nodejs18.x",
+        "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
     },
