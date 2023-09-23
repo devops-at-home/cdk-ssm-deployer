@@ -24,6 +24,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
     githubOptions: {
         pullRequestLint: false,
     },
+    depsUpgrade: false,
     deps: ['aws-cdk-github-oidc'],
     devDeps: ['esbuild@0', '@types/aws-lambda', '@types/node'],
     gitignore: ['.idea'],
